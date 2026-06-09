@@ -73,29 +73,35 @@ class Registry:
     def all(self) -> list[Capability]:
         return list(self._caps.values())
 
-    # ---- persistence -------------------------------------------------------------
+    # ---- (de)serialization (used by the Store backends) --------------------------
+    def export(self) -> list[dict]:
+        return [{"name": c.name, "kind": c.kind.value, "description": c.description,
+                 "handle": c.handle, "routing_key": c.routing_key, "when_to_use": c.when_to_use,
+                 "version": c.version, "eval_passed": c.eval_passed, "project": c.project,
+                 "metadata": c.metadata} for c in self._caps.values()]
+
+    def import_records(self, records: list[dict]) -> "Registry":
+        for d in records:
+            self.register(Capability(
+                name=d["name"], kind=CapabilityKind(d["kind"]), description=d["description"],
+                handle=d.get("handle"), routing_key=d.get("routing_key"),
+                when_to_use=d.get("when_to_use", ""), version=d.get("version", "0.1.0"),
+                eval_passed=d.get("eval_passed", False), project=d.get("project", "default"),
+                metadata=d.get("metadata", {})))
+        return self
+
+    # ---- file convenience --------------------------------------------------------
     def save(self, path: str) -> None:
         import json
         import os
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-        data = [{"name": c.name, "kind": c.kind.value, "description": c.description,
-                 "handle": c.handle, "routing_key": c.routing_key, "when_to_use": c.when_to_use,
-                 "version": c.version, "eval_passed": c.eval_passed, "project": c.project,
-                 "metadata": c.metadata} for c in self._caps.values()]
         with open(path, "w", encoding="utf-8") as f:
-            json.dump(data, f)
+            json.dump(self.export(), f)
 
     def load(self, path: str) -> "Registry":
         import json
         import os
-        if not os.path.exists(path):
-            return self
-        with open(path, encoding="utf-8") as f:
-            for d in json.load(f):
-                self.register(Capability(
-                    name=d["name"], kind=CapabilityKind(d["kind"]), description=d["description"],
-                    handle=d.get("handle"), routing_key=d.get("routing_key"),
-                    when_to_use=d.get("when_to_use", ""), version=d.get("version", "0.1.0"),
-                    eval_passed=d.get("eval_passed", False), project=d.get("project", "default"),
-                    metadata=d.get("metadata", {})))
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                self.import_records(json.load(f))
         return self

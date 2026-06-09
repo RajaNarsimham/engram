@@ -16,6 +16,7 @@ import warnings
 from typing import Any
 
 from engram.orchestrator.orchestrator import Answer, Orchestrator
+from engram.persistence import make_store
 from engram.registry.registry import CapabilityKind, Registry
 from engram.retrieval.retriever import Retriever
 
@@ -40,9 +41,11 @@ class Engram:
     def __init__(self, model_id: str | None = None, device: str = "cuda:0",
                  driver: Any = None, embed_device: str | None = None,
                  store_dir: str = "engram_store", auto_save: bool = True,
-                 load_on_start: bool = True):
+                 load_on_start: bool = True, store: Any = None):
         self.store_dir = store_dir
         self.auto_save = auto_save
+        # persistence backend: explicit `store`, else auto (AWS if env-configured, else files)
+        self.store = make_store(store, work_dir=store_dir)
         if driver is None:
             from engram.drivers.peft_driver import PEFTDriver
             driver = PEFTDriver(model_id, device, adapter_dir=os.path.join(store_dir, "adapters"))
@@ -73,26 +76,28 @@ class Engram:
 
     def save(self) -> None:
         os.makedirs(self.store_dir, exist_ok=True)
-        self.registry.save(os.path.join(self.store_dir, "registry.json"))
+        self.store.push_registry(self.registry.export())
         for project, r in self.retrievers.items():
-            r.save(self._proj_dir(project))
+            d = self._proj_dir(project)
+            r.save(d)
+            self.store.push_dir(f"projects/{project}", d)
 
     def load(self) -> None:
-        self.registry.load(os.path.join(self.store_dir, "registry.json"))
+        self.registry.import_records(self.store.pull_registry())
         adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
         for c in self.registry.all():                       # reload skill adapters
             if c.kind == CapabilityKind.SKILL and c.handle:
-                ap = os.path.join(adir, c.handle)
-                if os.path.isdir(ap):
+                local = os.path.join(adir, c.handle)
+                self.store.pull_dir(f"adapters/{c.handle}", local)
+                if os.path.isdir(local):
                     try:
-                        self.driver.load_lora(ap, c.handle)
+                        self.driver.load_lora(local, c.handle)
                     except Exception as e:                  # noqa: BLE001
                         warnings.warn(f"could not reload adapter {c.handle}: {e}")
-        projdir = os.path.join(self.store_dir, "projects")
-        if os.path.isdir(projdir):
-            for project in os.listdir(projdir):
-                self.retrievers[project] = Retriever(device=self.embed_device).load(
-                    self._proj_dir(project))
+        for project in self.store.list_dirs("projects"):    # reload per-project RAG
+            d = self._proj_dir(project)
+            self.store.pull_dir(f"projects/{project}", d)
+            self.retrievers[project] = Retriever(device=self.embed_device).load(d)
 
     # ---- retrieval store (per project) ------------------------------------------
     def retriever(self, project: str = "default") -> Retriever:
@@ -120,7 +125,9 @@ class Engram:
         else:
             result["lora_job"] = None
         if self.auto_save:
-            self.retriever(project).save(self._proj_dir(project))   # RAG survives restart
+            d = self._proj_dir(project)
+            self.retriever(project).save(d)
+            self.store.push_dir(f"projects/{project}", d)           # RAG survives restart
         return result
 
     def consolidate(self) -> list[dict]:
@@ -130,5 +137,9 @@ class Engram:
             return []
         results = self._consolidator.process_all()
         if self.auto_save:
-            self.registry.save(os.path.join(self.store_dir, "registry.json"))  # skills survive restart
+            self.store.push_registry(self.registry.export())
+            adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
+            for r in results:                                       # push promoted adapters
+                if r.get("promoted") and os.path.isdir(os.path.join(adir, r["id"])):
+                    self.store.push_dir(f"adapters/{r['id']}", os.path.join(adir, r["id"]))
         return results
