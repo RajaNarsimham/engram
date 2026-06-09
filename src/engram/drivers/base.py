@@ -60,6 +60,13 @@ class BaseLLMDriver(ABC):
     def arch_info(self) -> ArchInfo:
         """Expose architecture facts incl. induction-capability (FR-D4)."""
 
+    def fingerprint(self) -> str:
+        """Identity of the base a LoRA is bound to: model id + arch dims. Skills trained
+        on a different fingerprint are NOT valid on this base (shapes/weights differ)."""
+        a = self.arch_info()
+        mid = getattr(self, "model_id", type(self).__name__)
+        return f"{mid}|h{a.hidden_size}|L{a.num_layers}"
+
     # ---- generation ---------------------------------------------------------------
     @abstractmethod
     def generate(self, req: GenRequest) -> Iterator[str]:

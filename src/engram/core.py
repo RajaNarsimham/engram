@@ -110,6 +110,28 @@ class Engram:
             self.store.push_registry(self.registry.export())
         return c
 
+    def incompatible_skills(self) -> list:
+        """Skills whose adapter was trained on a different base than the current one."""
+        return [c for c in self.registry.all()
+                if c.kind == CapabilityKind.SKILL and c.status == "incompatible"]
+
+    def rebase(self) -> dict:
+        """Retrain every skill that's incompatible with the CURRENT base, from its stored
+        source — so a base-model swap costs you only training time, not your skills.
+        Knowledge (RAG + graph) is base-agnostic and untouched."""
+        if self._consolidator is None:
+            return {"error": "no trainer on this node (base lacks train_lora)"}
+        queued, skipped = [], []
+        for c in self.incompatible_skills():
+            if c.source:
+                self._consolidator.enqueue(c.source, project=c.project, name=c.name)  # same name overwrites
+                queued.append(c.name)
+            else:
+                skipped.append(c.name)                       # no stored source -> can't auto-retrain
+        results = self.consolidate() if queued else []
+        return {"retrained": [r["id"] for r in results if r.get("promoted")],
+                "queued": queued, "skipped_no_source": skipped}
+
     def add_tenant(self, name: str = "", project: str | None = None, quota: dict | None = None):
         """Mint a tenant + API key (returns the plaintext key once). Their `project`
         is their isolated namespace; auth maps the key -> that project server-side.
@@ -133,16 +155,25 @@ class Engram:
     def load(self) -> None:
         self.registry.import_records(self.store.pull_registry())
         self.tenants.import_records(self.store.pull_json("tenants", []))
+        fp = self.driver.fingerprint()
         adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
         for c in self.registry.all():                       # reload skill adapters
-            if c.kind == CapabilityKind.SKILL and c.handle:
-                local = os.path.join(adir, c.handle)
-                self.store.pull_dir(f"adapters/{c.handle}", local)
-                if os.path.isdir(local):
-                    try:
-                        self.driver.load_lora(local, c.handle)
-                    except Exception as e:                  # noqa: BLE001
-                        warnings.warn(f"could not reload adapter {c.handle}: {e}")
+            if c.kind != CapabilityKind.SKILL or not c.handle:
+                continue
+            if c.base_fp and c.base_fp != fp:               # trained on a DIFFERENT base
+                c.status = "incompatible"                   # don't serve; rebase() can retrain it
+                warnings.warn(f"skill {c.name} was trained on {c.base_fp}, not {fp}; "
+                              f"marked incompatible (call rebase() to retrain it)")
+                continue
+            local = os.path.join(adir, c.handle)
+            self.store.pull_dir(f"adapters/{c.handle}", local)
+            if os.path.isdir(local):
+                try:
+                    self.driver.load_lora(local, c.handle)
+                except Exception as e:                      # noqa: BLE001
+                    c.status = "incompatible"
+                    warnings.warn(f"adapter {c.name} failed to load on this base ({e}); "
+                                  f"marked incompatible")
         from engram.vectordb import make_retriever
         projects = set(self.store.pull_json("projects", [])) | set(self.store.list_dirs("projects"))
         for project in projects:                             # reload per-project RAG + graph

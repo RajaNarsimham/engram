@@ -127,6 +127,11 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         c = eg().rollback(req.name, project=scoped(tenant, req.project))
         return {"name": req.name, "status": c.status if c else "not_found"}
 
+    @app.post("/v1/rebase")
+    def rebase(tenant=Depends(auth)):
+        with eg().model_lock:                  # retrain base-incompatible skills (heavy)
+            return eg().rebase()
+
     def _check_docs(tenant, project):
         if tenant and not eg().quotas.within_limit(
                 tenant, "max_documents", eg().retriever(project).count()):

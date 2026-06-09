@@ -27,9 +27,11 @@ class Capability:
     when_to_use: str = ""
     version: str = "0.1.0"
     eval_passed: bool = False             # passed the eval-gate (FR-E1)
-    status: str = "live"                  # lifecycle: staged | canary | live | rolled_back
+    status: str = "live"                  # staged | canary | live | rolled_back | incompatible
     canary_pct: float = 0.1               # if canary: fraction of traffic routed here
     served: int = 0                       # canary monitoring counter
+    base_fp: str = ""                     # base-model fingerprint this skill LoRA is bound to
+    source: str = ""                      # source text the skill was distilled from (enables rebase)
     project: str = "default"              # tenant/project scope (FR-R4)
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -87,7 +89,8 @@ class Registry:
         return [{"name": c.name, "kind": c.kind.value, "description": c.description,
                  "handle": c.handle, "routing_key": c.routing_key, "when_to_use": c.when_to_use,
                  "version": c.version, "eval_passed": c.eval_passed, "status": c.status,
-                 "canary_pct": c.canary_pct, "served": c.served, "project": c.project,
+                 "canary_pct": c.canary_pct, "served": c.served, "base_fp": c.base_fp,
+                 "source": c.source, "project": c.project,
                  "metadata": c.metadata} for c in self._caps.values()]
 
     def import_records(self, records: list[dict]) -> "Registry":
@@ -98,6 +101,7 @@ class Registry:
                 when_to_use=d.get("when_to_use", ""), version=d.get("version", "0.1.0"),
                 eval_passed=d.get("eval_passed", False), status=d.get("status", "live"),
                 canary_pct=d.get("canary_pct", 0.1), served=d.get("served", 0),
+                base_fp=d.get("base_fp", ""), source=d.get("source", ""),
                 project=d.get("project", "default"), metadata=d.get("metadata", {})))
         return self
 

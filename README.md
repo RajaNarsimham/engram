@@ -186,6 +186,21 @@ Engram(..., consolidation="scheduled", consolidation_interval=3600)  # or hourly
 A shared model-lock serializes training with serving, so background consolidation
 never races generation on the same GPU.
 
+### Changing the base model
+
+LoRA skills are bound to the base they were trained on — swap the base and the old
+adapters are invalid. Engram stamps every skill with a base **fingerprint** + its
+**source text**, so a swap is *safe and recoverable* instead of silent corruption:
+
+```python
+eg = Engram("a-different-base", store={...})   # same store, new base
+eg.incompatible_skills()                        # skills trained on the old base (auto-flagged, not served)
+eg.rebase()                                     # retrain them from stored source onto the new base
+```
+
+Your **knowledge survives** the swap (RAG index + knowledge graph are base-agnostic);
+only the skill adapters are retrained. Over the API: `POST /v1/rebase`.
+
 ### Elastic / horizontal scale
 
 Split training and serving across node types that share one S3/DynamoDB store:

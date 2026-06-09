@@ -136,6 +136,7 @@ class ConsolidationEngine:
                 handle=lid, routing_key=self.embed_fn([text])[0],
                 when_to_use=text[:200], eval_passed=True,
                 status="canary" if self.canary else "live", canary_pct=self.canary_pct,
+                base_fp=self.driver.fingerprint(), source=text[:8000],
                 project=project))
         return {"id": jid, "eval": round(score, 3), "promoted": promoted,
                 "status": "canary" if (promoted and self.canary) else ("live" if promoted else "rejected"),
