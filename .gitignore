@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+
+# Tests / tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ML artifacts — never commit weights, indexes, or data
+*.safetensors
+*.bin
+*.gguf
+*.pt
+*.ckpt
+models/
+checkpoints/
+adapters/
+data/
+indexes/
+*.faiss
+.cache/
+hf_cache/
+
+# Engram runtime state (per-deployment, not source)
+engram_store/
+*.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
