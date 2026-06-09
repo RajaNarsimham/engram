@@ -119,12 +119,17 @@ export ENGRAM_DDB_TABLE=engram-registry   # optional; else the registry lives in
 Early and honest about it. Built solo; the research core is validated, the
 platform is being assembled in tiers:
 
-- **Tier 0 — core** *(in progress)*: driver interface, capability registry,
-  orchestrator, retrieval, adapter train/route, consolidation + eval-gate.
-  Runs on a single workstation.
-- **Tier 1 — platform**: multi-tenancy, elastic serving, knowledge graph,
-  connector framework.
+- **Tier 0 — core** ✅: driver interface, capability registry, orchestrator,
+  retrieval, adapter train/route, consolidation + eval-gate, OpenAI-compatible
+  server, pluggable persistence (local files or AWS S3 + DynamoDB).
+- **Tier 1 — platform** *(in progress)*: ✅ document connectors (files/dirs/pdf/
+  html/code) · ✅ agentic orchestration (model-driven tool loop) · ✅ knowledge
+  graph + GraphRAG (multi-hop retrieval) · ⏳ multi-tenancy, canary lifecycle,
+  elastic serving.
 - **Tier 2 — compliance**: SOC2 → HIPAA/GDPR/FedRAMP (design-for now).
+
+All Tier-0/1 capabilities above are validated end-to-end on a real model
+(Qwen3.5-4B); see commit history. CI runs on every push (`pytest` + `ruff`).
 
 ## License
 
