@@ -67,6 +67,10 @@ class Engram:
                 self.driver, self.registry, self.driver.embed, self._gate)
         else:
             self._gate = self._consolidator = None
+        # agentic mode: the model drives via tools (if the base supports tool-calling)
+        from engram.orchestrator.agentic import AgenticOrchestrator
+        self.agent_orch = (AgenticOrchestrator(self.driver, self.registry, self.retrievers)
+                           if self.driver.capabilities().tool_use else None)
         if load_on_start:
             self.load()
 
@@ -110,6 +114,15 @@ class Engram:
         if isinstance(messages, str):
             messages = [{"role": "user", "content": messages}]
         return self.orch.answer(messages, project=project, **kw)
+
+    def run(self, messages, project: str = "default", **kw):
+        """Agentic mode: the model drives via tools (search_knowledge + registered tools).
+        Returns an AgentResult (answer + tool-call trace)."""
+        if isinstance(messages, str):
+            messages = [{"role": "user", "content": messages}]
+        if self.agent_orch is None:
+            raise RuntimeError("base model does not support tool use (agentic mode unavailable)")
+        return self.agent_orch.run(messages, project=project, **kw)
 
     # ---- in-band teaching (FR-C6) -----------------------------------------------
     def teach(self, text: str, project: str = "default", name: str | None = None,

@@ -39,6 +39,7 @@ class ChatRequest(BaseModel):
     temperature: float = 0.0
     max_tokens: int = 512
     project: str = "default"          # Engram extension (multi-tenant later)
+    agentic: bool = False             # Engram extension: model-driven tool loop
 
 
 class TeachRequest(BaseModel):
@@ -108,6 +109,15 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
     def chat(req: ChatRequest):
         messages = [m.model_dump() for m in req.messages]
         model, cid = req.model, "chatcmpl-" + uuid.uuid4().hex[:24]
+
+        if req.agentic:                       # model-driven tool loop (non-streaming)
+            with lock:
+                r = eg().run(messages, project=req.project, max_new_tokens=req.max_tokens)
+            return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,
+                    "choices": [{"index": 0, "message": {"role": "assistant", "content": r.answer},
+                                 "finish_reason": "stop"}],
+                    "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+                    "engram": {"trace": r.trace, "iterations": r.iterations}}
 
         if req.stream:
             def stream():
