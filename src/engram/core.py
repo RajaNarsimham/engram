@@ -43,7 +43,7 @@ class Engram:
     def __init__(self, model_id: str | None = None, device: str = "cuda:0",
                  driver: Any = None, embed_device: str | None = None,
                  store_dir: str = "engram_store", auto_save: bool = True,
-                 load_on_start: bool = True, store: Any = None):
+                 load_on_start: bool = True, store: Any = None, canary: bool = False):
         self.store_dir = store_dir
         self.auto_save = auto_save
         # persistence backend: explicit `store`, else auto (AWS if env-configured, else files)
@@ -69,7 +69,7 @@ class Engram:
             from engram.evalgate.gate import EvalGate
             self._gate = EvalGate(self.driver)
             self._consolidator = ConsolidationEngine(
-                self.driver, self.registry, self.driver.embed, self._gate)
+                self.driver, self.registry, self.driver.embed, self._gate, canary=canary)
         else:
             self._gate = self._consolidator = None
         # agentic mode: the model drives via tools (if the base supports tool-calling)
@@ -83,6 +83,20 @@ class Engram:
     # ---- persistence (state survives restart) -----------------------------------
     def _proj_dir(self, project: str) -> str:
         return os.path.join(self.store_dir, "projects", project)
+
+    def promote(self, name: str, project: str = "default"):
+        """Promote a canary skill to full (live) traffic."""
+        c = self.registry.set_status(name, "live", project)
+        if self.auto_save:
+            self.store.push_registry(self.registry.export())
+        return c
+
+    def rollback(self, name: str, project: str = "default"):
+        """Roll back a canary/live skill — it stops being routed to."""
+        c = self.registry.set_status(name, "rolled_back", project)
+        if self.auto_save:
+            self.store.push_registry(self.registry.export())
+        return c
 
     def add_tenant(self, name: str = "", project: str | None = None):
         """Mint a tenant + API key (returns the plaintext key once). Their `project`

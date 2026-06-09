@@ -54,6 +54,11 @@ class IngestRequest(BaseModel):
     consolidate: bool = False
 
 
+class PromoteRequest(BaseModel):
+    name: str
+    project: str = "default"
+
+
 def _sse(cid, model, delta=None, finish=None, extra=None) -> str:
     ch = {"id": cid, "object": "chat.completion.chunk", "created": int(time.time()),
           "model": model, "choices": [{"index": 0, "delta": delta or {}, "finish_reason": finish}]}
@@ -108,8 +113,19 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
     def capabilities(project: str = "default", tenant=Depends(auth)):
         project = scoped(tenant, project)
         return {"capabilities": [
-            {"name": c.name, "kind": c.kind.value, "description": c.description, "live": c.eval_passed}
+            {"name": c.name, "kind": c.kind.value, "description": c.description,
+             "status": c.status, "served": c.served}
             for c in eg().registry.list(project=project)]}
+
+    @app.post("/v1/promote")
+    def promote(req: PromoteRequest, tenant=Depends(auth)):
+        c = eg().promote(req.name, project=scoped(tenant, req.project))
+        return {"name": req.name, "status": c.status if c else "not_found"}
+
+    @app.post("/v1/rollback")
+    def rollback(req: PromoteRequest, tenant=Depends(auth)):
+        c = eg().rollback(req.name, project=scoped(tenant, req.project))
+        return {"name": req.name, "status": c.status if c else "not_found"}
 
     @app.post("/v1/teach")
     def teach(req: TeachRequest, tenant=Depends(auth)):

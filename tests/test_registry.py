@@ -3,7 +3,8 @@ from engram.registry.registry import Capability, CapabilityKind, Registry
 
 def cap(name, project="default", live=True):
     return Capability(name=name, kind=CapabilityKind.SKILL, description=f"{name} skill",
-                      routing_key=[0.1, 0.2, 0.3], when_to_use="x", eval_passed=live, project=project)
+                      routing_key=[0.1, 0.2, 0.3], when_to_use="x", eval_passed=live,
+                      status="live" if live else "staged", project=project)
 
 
 def test_register_and_live_filter():

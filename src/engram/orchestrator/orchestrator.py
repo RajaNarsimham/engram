@@ -10,6 +10,7 @@ Encodes the validated rules:
 """
 from __future__ import annotations
 
+import random
 from dataclasses import dataclass, field
 from typing import Callable, Iterator
 
@@ -46,6 +47,7 @@ class Orchestrator:
         self.route_threshold = route_threshold
         self.k = k
         self.graphs = graphs if graphs is not None else {}
+        self._rng = random.Random()
 
     def _route(self, query: str, project: str) -> tuple[str | None, float]:
         skills = [c for c in self.registry.list(project=project, kind=CapabilityKind.SKILL,
@@ -53,9 +55,20 @@ class Orchestrator:
         if not skills:
             return None, 0.0
         qv = self.embed_fn([query])[0]
-        scored = [(c.name, _cos(qv, c.routing_key)) for c in skills]
-        name, score = max(scored, key=lambda t: t[1])
-        return (name, score) if score >= self.route_threshold else (None, score)
+        scored = sorted(((c, _cos(qv, c.routing_key)) for c in skills),
+                        key=lambda t: t[1], reverse=True)
+        best, score = scored[0]
+        if score < self.route_threshold:
+            return None, score
+        if best.status == "canary" and self._rng.random() >= best.canary_pct:
+            # this request bypasses the canary -> best LIVE alternative, else base
+            for c, s in scored[1:]:
+                if c.status == "live" and s >= self.route_threshold:
+                    c.served += 1
+                    return c.name, s
+            return None, score
+        best.served += 1
+        return best.name, score
 
     def _assemble(self, messages, hits: list[Hit], gfacts=()):
         sys = _SYS

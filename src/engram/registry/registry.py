@@ -26,7 +26,10 @@ class Capability:
     routing_key: list[float] | None = None   # frozen-feature key (FR-O3); NOT a trained classifier
     when_to_use: str = ""
     version: str = "0.1.0"
-    eval_passed: bool = False             # must pass the eval-gate before serving (FR-E1)
+    eval_passed: bool = False             # passed the eval-gate (FR-E1)
+    status: str = "live"                  # lifecycle: staged | canary | live | rolled_back
+    canary_pct: float = 0.1               # if canary: fraction of traffic routed here
+    served: int = 0                       # canary monitoring counter
     project: str = "default"              # tenant/project scope (FR-R4)
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -57,13 +60,19 @@ class Registry:
     def get(self, name: str, project: str = "default") -> Capability | None:
         return self._caps.get((project, name))
 
+    def set_status(self, name: str, status: str, project: str = "default") -> Capability | None:
+        c = self.get(name, project=project)
+        if c is not None:
+            c.status = status
+        return c
+
     def list(self, *, project: str = "default", kind: CapabilityKind | None = None,
              live_only: bool = False) -> list[Capability]:
         out = [c for (p, _), c in self._caps.items() if p == project]
         if kind is not None:
             out = [c for c in out if c.kind == kind]
         if live_only:
-            out = [c for c in out if c.eval_passed]
+            out = [c for c in out if c.status in ("live", "canary")]   # servable
         return out
 
     def tool_specs(self, project: str = "default") -> list[dict[str, Any]]:
@@ -77,7 +86,8 @@ class Registry:
     def export(self) -> list[dict]:
         return [{"name": c.name, "kind": c.kind.value, "description": c.description,
                  "handle": c.handle, "routing_key": c.routing_key, "when_to_use": c.when_to_use,
-                 "version": c.version, "eval_passed": c.eval_passed, "project": c.project,
+                 "version": c.version, "eval_passed": c.eval_passed, "status": c.status,
+                 "canary_pct": c.canary_pct, "served": c.served, "project": c.project,
                  "metadata": c.metadata} for c in self._caps.values()]
 
     def import_records(self, records: list[dict]) -> "Registry":
@@ -86,8 +96,9 @@ class Registry:
                 name=d["name"], kind=CapabilityKind(d["kind"]), description=d["description"],
                 handle=d.get("handle"), routing_key=d.get("routing_key"),
                 when_to_use=d.get("when_to_use", ""), version=d.get("version", "0.1.0"),
-                eval_passed=d.get("eval_passed", False), project=d.get("project", "default"),
-                metadata=d.get("metadata", {})))
+                eval_passed=d.get("eval_passed", False), status=d.get("status", "live"),
+                canary_pct=d.get("canary_pct", 0.1), served=d.get("served", 0),
+                project=d.get("project", "default"), metadata=d.get("metadata", {})))
         return self
 
     # ---- file convenience --------------------------------------------------------

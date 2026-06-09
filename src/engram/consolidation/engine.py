@@ -27,12 +27,14 @@ _SYL = "zen vor qui max bri tho lex nar plu gor fim wex jad kor lun tyr".split()
 
 class ConsolidationEngine:
     def __init__(self, driver: BaseLLMDriver, registry: Registry, embed_fn: Callable,
-                 gate: EvalGate, steps: int = 300):
+                 gate: EvalGate, steps: int = 300, canary: bool = False, canary_pct: float = 0.1):
         self.driver = driver
         self.registry = registry
         self.embed_fn = embed_fn
         self.gate = gate
         self.steps = steps
+        self.canary = canary               # new skills enter as canary (vs straight to live)
+        self.canary_pct = canary_pct
         self.jobs: list[dict] = []
         self.rng = random.Random(0)
 
@@ -91,6 +93,9 @@ class ConsolidationEngine:
             self.registry.register(Capability(
                 name=jid, kind=CapabilityKind.SKILL, description=text[:120],
                 handle=lid, routing_key=self.embed_fn([text])[0],
-                when_to_use=text[:200], eval_passed=True, project=project))
+                when_to_use=text[:200], eval_passed=True,
+                status="canary" if self.canary else "live", canary_pct=self.canary_pct,
+                project=project))
         return {"id": jid, "eval": round(score, 3), "promoted": promoted,
+                "status": "canary" if (promoted and self.canary) else ("live" if promoted else "rejected"),
                 "n_qa": len(qa), "n_train": len(train)}

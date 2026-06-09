@@ -127,6 +127,20 @@ key, tenant = eg.add_tenant(name="acme")    # plaintext key returned once; store
 Auth turns on automatically once any tenant exists (or force it with
 `create_app(..., require_auth=True)`). Without tenants, the server runs open.
 
+### Canary lifecycle
+
+With `canary=True`, a newly-consolidated skill enters **canary** — served to only a
+fraction of matching traffic — before you promote it to full:
+
+```python
+eg = Engram("Qwen/Qwen3.5-4B", canary=True)
+eg.consolidate()              # new skill enters as canary (e.g. 10% of matching traffic)
+eg.promote("skill_id")        # → live (100%)     eg.rollback("skill_id") → stop serving
+```
+
+Over the API: `POST /v1/promote` / `POST /v1/rollback`; `GET /v1/capabilities` shows
+each skill's `status` and `served` count.
+
 ## Status & roadmap
 
 Early and honest about it. Built solo; the research core is validated, the
@@ -138,7 +152,8 @@ platform is being assembled in tiers:
 - **Tier 1 — platform** *(in progress)*: ✅ document connectors (files/dirs/pdf/
   html/code) · ✅ agentic orchestration (model-driven tool loop) · ✅ knowledge
   graph + GraphRAG (multi-hop retrieval) · ✅ multi-tenancy + API-key auth
-  (per-tenant project isolation) · ⏳ canary lifecycle, elastic serving.
+  (per-tenant project isolation) · ✅ canary lifecycle (staged skill promotion)
+  · ⏳ elastic serving.
 - **Tier 2 — compliance**: SOC2 → HIPAA/GDPR/FedRAMP (design-for now).
 
 All Tier-0/1 capabilities above are validated end-to-end on a real model
