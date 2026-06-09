@@ -50,7 +50,15 @@ class Engram:
         self.registry = Registry()
         self.retrievers: dict[str, Retriever] = {}
         self.orch = Orchestrator(self.driver, self.registry, self.retrievers, self.driver.embed)
-        self._consolidator = None  # set lazily (Step 3)
+        # continual-learning loop (consolidation + eval-gate)
+        if self.driver.capabilities().train_lora:
+            from engram.consolidation.engine import ConsolidationEngine
+            from engram.evalgate.gate import EvalGate
+            self._gate = EvalGate(self.driver)
+            self._consolidator = ConsolidationEngine(
+                self.driver, self.registry, self.driver.embed, self._gate)
+        else:
+            self._gate = self._consolidator = None
 
     # ---- retrieval store (per project) ------------------------------------------
     def retriever(self, project: str = "default") -> Retriever:
@@ -65,14 +73,23 @@ class Engram:
         return self.orch.answer(messages, project=project, **kw)
 
     # ---- in-band teaching (FR-C6) -----------------------------------------------
-    def teach(self, text: str, project: str = "default", metadata: dict | None = None) -> dict:
+    def teach(self, text: str, project: str = "default", name: str | None = None,
+              metadata: dict | None = None) -> dict:
         """Internalize knowledge. RAG ingestion is IMMEDIATE (available next turn);
         skill-adapter internalization is QUEUED for consolidation (async)."""
         docs = _chunk(text)
         self.retriever(project).add(docs, metas=[metadata] * len(docs) if metadata else None)
         result = {"rag_ingested": len(docs), "available_now": True}
         if self._consolidator is not None:
-            result["lora_job"] = self._consolidator.enqueue(text, project=project)
+            result["lora_job"] = self._consolidator.enqueue(text, project=project, name=name)
+            result["lora_status"] = "queued (run consolidate() to internalize)"
         else:
-            result["lora_job"] = "consolidation engine not attached (Step 3)"
+            result["lora_job"] = None
         return result
+
+    def consolidate(self) -> list[dict]:
+        """Run the queued learning jobs: self-distill -> train adapter -> eval-gate ->
+        register skill. (Tier-0 synchronous; Tier-1 = async/scheduled/threshold policy.)"""
+        if self._consolidator is None:
+            return []
+        return self._consolidator.process_all()

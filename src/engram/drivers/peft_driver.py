@@ -33,6 +33,8 @@ class PEFTDriver(BaseLLMDriver):
         os.makedirs(adapter_dir, exist_ok=True)
         self.tok = AutoTokenizer.from_pretrained(model_id)
         self.model = self._load(model_id, dtype, device)
+        self._stop_ids = self._stop_token_ids()
+        self._pad_id = self.tok.pad_token_id if self.tok.pad_token_id is not None else self.tok.eos_token_id
         self._is_peft = False
         self._adapters: set[str] = set()
         self._embed_model_name = embed_model
@@ -50,6 +52,19 @@ class PEFTDriver(BaseLLMDriver):
             except Exception:
                 continue
         raise RuntimeError(f"could not load {model_id} with any Auto* class")
+
+    def _stop_token_ids(self) -> list[int]:
+        """End-of-turn stop tokens so chat generation halts at the assistant boundary
+        (otherwise the model hallucinates further fake turns up to max_new_tokens)."""
+        stop = [self.tok.eos_token_id]
+        for t in ("<|im_end|>", "<|eot_id|>", "<|end|>", "<|endoftext|>"):
+            try:
+                i = self.tok.convert_tokens_to_ids(t)
+                if isinstance(i, int) and i >= 0 and i != self.tok.unk_token_id:
+                    stop.append(i)
+            except Exception:
+                pass
+        return list(dict.fromkeys(s for s in stop if s is not None))
 
     # ---- introspection -----------------------------------------------------------
     def capabilities(self) -> DriverCapabilities:
@@ -125,8 +140,10 @@ class PEFTDriver(BaseLLMDriver):
         self.model.eval()
         streamer = TextIteratorStreamer(self.tok, skip_prompt=True, skip_special_tokens=True)
         kwargs = dict(input_ids=ids, max_new_tokens=req.max_new_tokens,
-                      do_sample=req.temperature > 0,
-                      temperature=max(req.temperature, 1e-5), streamer=streamer)
+                      do_sample=req.temperature > 0, streamer=streamer,
+                      eos_token_id=self._stop_ids, pad_token_id=self._pad_id)
+        if req.temperature > 0:
+            kwargs["temperature"] = req.temperature
 
         def _run():
             with torch.no_grad():
@@ -146,11 +163,21 @@ class PEFTDriver(BaseLLMDriver):
     def train_lora(self, examples: Iterable[dict[str, Any]], config: dict[str, Any]) -> str:
         """examples: [{'messages': [...chat...]}]; loss on assistant completion only.
         config: {lora_id, steps, lr, r, alpha}. Returns the saved adapter id."""
-        import torch.nn.functional as F
+        from peft import LoraConfig, get_peft_model
         lora_id = config.get("lora_id", f"skill_{int(time.time())}")
-        targets = self._lang_targets()
-        self._ensure_peft(targets, r=config.get("r", 16), alpha=config.get("alpha", 32))
-        self.model.set_adapter("default") if "default" in getattr(self.model, "peft_config", {}) else None
+        # leaf-name targets match language Linears before AND after PEFT wrapping (suffix match)
+        leaves = sorted({n.split(".")[-1] for n, m in self.model.named_modules()
+                         if isinstance(m, torch.nn.Linear) and ".language_model." in n
+                         and "lora" not in n.lower()})
+        lcfg = LoraConfig(target_modules=leaves, r=config.get("r", 16),
+                          lora_alpha=config.get("alpha", 32), lora_dropout=0.05,
+                          bias="none", task_type="CAUSAL_LM")
+        if not self._is_peft:
+            self.model = get_peft_model(self.model, lcfg, adapter_name=lora_id)
+            self._is_peft = True
+        elif lora_id not in self.model.peft_config:
+            self.model.add_adapter(lora_id, lcfg)
+        self.model.set_adapter(lora_id)   # only the active adapter trains
 
         def to_pair(ex):
             msgs = ex["messages"]
@@ -176,7 +203,7 @@ class PEFTDriver(BaseLLMDriver):
             opt.step(); opt.zero_grad(set_to_none=True)
         self.model.eval()
         path = os.path.join(self.adapter_dir, lora_id)
-        self.model.save_pretrained(path, selected_adapters=None)
+        self.model.save_pretrained(path, selected_adapters=[lora_id])
         self._adapters.add(lora_id)
         return lora_id
 
