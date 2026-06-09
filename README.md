@@ -141,6 +141,19 @@ eg.promote("skill_id")        # → live (100%)     eg.rollback("skill_id") → 
 Over the API: `POST /v1/promote` / `POST /v1/rollback`; `GET /v1/capabilities` shows
 each skill's `status` and `served` count.
 
+### Consolidation policy
+
+By default consolidation is **manual** (`eg.consolidate()`). For hands-off operation,
+run it in the background, off the request path:
+
+```python
+Engram(..., consolidation="threshold", consolidation_threshold=8)    # auto-run after 8 queued
+Engram(..., consolidation="scheduled", consolidation_interval=3600)  # or hourly
+```
+
+A shared model-lock serializes training with serving, so background consolidation
+never races generation on the same GPU.
+
 ### Elastic / horizontal scale
 
 Split training and serving across node types that share one S3/DynamoDB store:

@@ -15,6 +15,7 @@ from __future__ import annotations
 import json
 import random
 import re
+import threading
 import time
 from typing import Callable
 
@@ -27,7 +28,9 @@ _SYL = "zen vor qui max bri tho lex nar plu gor fim wex jad kor lun tyr".split()
 
 class ConsolidationEngine:
     def __init__(self, driver: BaseLLMDriver, registry: Registry, embed_fn: Callable,
-                 gate: EvalGate, steps: int = 300, canary: bool = False, canary_pct: float = 0.1):
+                 gate: EvalGate, steps: int = 300, canary: bool = False, canary_pct: float = 0.1,
+                 trigger: str = "manual", threshold: int = 4, interval: float = 0.0,
+                 lock=None, on_process: Callable | None = None):
         self.driver = driver
         self.registry = registry
         self.embed_fn = embed_fn
@@ -37,10 +40,21 @@ class ConsolidationEngine:
         self.canary_pct = canary_pct
         self.jobs: list[dict] = []
         self.rng = random.Random(0)
+        # async policy: manual | threshold | scheduled
+        self.trigger = trigger
+        self.threshold = threshold
+        self.interval = interval
+        self.lock = lock or threading.RLock()   # shared with serving so train != generate concurrently
+        self.on_process = on_process            # Engram wraps process_all to also save to the Store
+        self._wake = threading.Event()
+        self._stop = threading.Event()
+        self._worker = None
 
     def enqueue(self, text: str, project: str = "default", name: str | None = None) -> str:
         jid = name or f"skill_{int(time.time() * 1000)}"
         self.jobs.append({"id": jid, "text": text, "project": project})
+        if self.trigger == "threshold" and len(self.jobs) >= self.threshold:
+            self._wake.set()
         return jid
 
     def process_all(self) -> list[dict]:
@@ -48,6 +62,33 @@ class ConsolidationEngine:
         while self.jobs:
             out.append(self._consolidate(self.jobs.pop(0)))
         return out
+
+    # ---- async worker (policy-driven) --------------------------------------------
+    def start(self) -> None:
+        if self.trigger == "manual" or self._worker is not None:
+            return
+        self._worker = threading.Thread(target=self._loop, daemon=True)
+        self._worker.start()
+
+    def stop(self) -> None:
+        self._stop.set()
+        self._wake.set()
+
+    def _process(self):
+        with self.lock:                          # serialize model access with serving
+            return (self.on_process or self.process_all)()
+
+    def _loop(self) -> None:
+        while not self._stop.is_set():
+            if self.trigger == "scheduled" and self.interval > 0:
+                self._wake.wait(self.interval)   # wake on schedule...
+            else:
+                self._wake.wait()                # ...or when threshold signals
+            self._wake.clear()
+            if self._stop.is_set():
+                break
+            if self.jobs:
+                self._process()
 
     # ---- internals ---------------------------------------------------------------
     def _gen_qa(self, text: str, n: int = 6) -> list[tuple[str, str]]:

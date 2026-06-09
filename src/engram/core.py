@@ -12,6 +12,7 @@ Needs the peft + rag extras:  pip install "engram[peft,rag]"
 from __future__ import annotations
 
 import os
+import threading
 import warnings
 from typing import Any
 
@@ -43,9 +44,12 @@ class Engram:
     def __init__(self, model_id: str | None = None, device: str = "cuda:0",
                  driver: Any = None, embed_device: str | None = None,
                  store_dir: str = "engram_store", auto_save: bool = True,
-                 load_on_start: bool = True, store: Any = None, canary: bool = False):
+                 load_on_start: bool = True, store: Any = None, canary: bool = False,
+                 consolidation: str = "manual", consolidation_threshold: int = 4,
+                 consolidation_interval: float = 0.0):
         self.store_dir = store_dir
         self.auto_save = auto_save
+        self.model_lock = threading.RLock()      # serialize model use (serving vs training)
         # persistence backend: explicit `store`, else auto (AWS if env-configured, else files)
         self.store = make_store(store, work_dir=store_dir)
         if driver is None:
@@ -69,7 +73,11 @@ class Engram:
             from engram.evalgate.gate import EvalGate
             self._gate = EvalGate(self.driver)
             self._consolidator = ConsolidationEngine(
-                self.driver, self.registry, self.driver.embed, self._gate, canary=canary)
+                self.driver, self.registry, self.driver.embed, self._gate, canary=canary,
+                trigger=consolidation, threshold=consolidation_threshold,
+                interval=consolidation_interval, lock=self.model_lock,
+                on_process=self._consolidate_and_save)
+            self._consolidator.start()           # no-op unless trigger != "manual"
         else:
             self._gate = self._consolidator = None
         # agentic mode: the model drives via tools (if the base supports tool-calling)
@@ -229,16 +237,20 @@ class Engram:
             res["lora_status"] = "queued (run consolidate() to internalize)"
         return res
 
-    def consolidate(self) -> list[dict]:
-        """Run the queued learning jobs: self-distill -> train adapter -> eval-gate ->
-        register skill. (Tier-0 synchronous; Tier-1 = async/scheduled/threshold policy.)"""
-        if self._consolidator is None:
-            return []
+    def _consolidate_and_save(self) -> list[dict]:
         results = self._consolidator.process_all()
-        if self.auto_save:
+        if self.auto_save and results:
             self.store.push_registry(self.registry.export())
             adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
             for r in results:                                       # push promoted adapters
                 if r.get("promoted") and os.path.isdir(os.path.join(adir, r["id"])):
                     self.store.push_dir(f"adapters/{r['id']}", os.path.join(adir, r["id"]))
         return results
+
+    def consolidate(self) -> list[dict]:
+        """Run the queued learning jobs now (synchronous). With consolidation='threshold'
+        or 'scheduled', a background worker also runs them per policy (off the request path)."""
+        if self._consolidator is None:
+            return []
+        with self.model_lock:
+            return self._consolidate_and_save()

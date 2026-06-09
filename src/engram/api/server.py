@@ -14,7 +14,6 @@ Needs the serve extra:  pip install "engram[serve]"
 from __future__ import annotations
 
 import json
-import threading
 import time
 import uuid
 from typing import Optional
@@ -71,7 +70,6 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
                require_auth: bool | None = None) -> "FastAPI":
     app = FastAPI(title="Engram", version="0.0.1",
                   description="Continual-learning harness for open-weight LLMs")
-    lock = threading.Lock()
     app.state.eg = engram
     app.state.cfg = (model_id, device)
 
@@ -133,13 +131,13 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
 
     @app.post("/v1/ingest")
     def ingest(req: IngestRequest, tenant=Depends(auth)):
-        with lock:
+        with eg().model_lock:
             return eg().ingest(req.path, project=scoped(tenant, req.project),
                                consolidate=req.consolidate)
 
     @app.post("/v1/consolidate")
     def consolidate(tenant=Depends(auth)):
-        with lock:
+        with eg().model_lock:
             return {"results": eg().consolidate()}
 
     @app.post("/v1/chat/completions")
@@ -149,7 +147,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         project = scoped(tenant, req.project)
 
         if req.agentic:                       # model-driven tool loop (non-streaming)
-            with lock:
+            with eg().model_lock:
                 r = eg().run(messages, project=project, max_new_tokens=req.max_tokens)
             return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,
                     "choices": [{"index": 0, "message": {"role": "assistant", "content": r.answer},
@@ -159,7 +157,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
 
         if req.stream:
             def stream():
-                with lock:
+                with eg().model_lock:
                     ans = eg().chat(messages, project=project,
                                     max_new_tokens=req.max_tokens, temperature=req.temperature)
                     yield _sse(cid, model, delta={"role": "assistant"},
@@ -170,7 +168,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
                     yield "data: [DONE]\n\n"
             return StreamingResponse(stream(), media_type="text/event-stream")
 
-        with lock:
+        with eg().model_lock:
             ans = eg().chat(messages, project=project,
                             max_new_tokens=req.max_tokens, temperature=req.temperature)
             text = ans.text()
