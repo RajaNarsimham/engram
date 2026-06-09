@@ -60,22 +60,34 @@ See [`docs/`](docs/) for the experiments and the full requirements.
 
 ## Architecture
 
-```
-        OpenAI/Anthropic-compatible API   (streaming, multi-tenant)
-                        │
-            ┌────────  Orchestrator  ────────┐   ← agentic: the model drives via tools
-            │ gate → retrieve → route →       │
-            │ assemble → generate → cite      │
-            └─────────────────────────────────┘
-              │            │              │
-   Capability Registry  Base-LLM Driver  Consolidation Engine (offline)
-   (skills/knowledge/    (vLLM | PEFT |   (teach → train adapter → eval-gate
-    tools as plugins)     Ollama)          → stage/canary → promote)
+```mermaid
+flowchart TD
+    C([OpenAI-compatible client]) --> API[API server — auth, tenants, quotas, streaming]
+    API --> ORCH{{Orchestrator — gate, retrieve, route, generate}}
+
+    ORCH --> REG[Capability Registry — skill routing, canary]
+    ORCH --> RAG[Retrieval — relevance-gated]
+    ORCH --> KG[Knowledge Graph — multi-hop]
+    ORCH --> DRV[Base-LLM Driver]
+    REG --> DRV
+    RAG --> DRV
+    KG --> DRV
+    DRV --> OUT([grounded answer + provenance])
+
+    TEACH[teach / ingest] --> RAG
+    TEACH --> KG
+    TEACH --> CON[Consolidation — self-distill, train LoRA, eval-gate, canary]
+    CON --> REG
+
+    DRV -. pluggable .-> D1[PEFTDriver train+serve · vLLMDriver serve]
+    RAG -. pluggable .-> V1[FAISS · Qdrant · AWS OpenSearch]
+    API -. pluggable .-> S1[(Store — local files · AWS S3 + DynamoDB)]
 ```
 
 Everything talks to the **Base-LLM Driver** interface — that's what makes base
 models plug-and-play. Everything you add (a skill, a knowledge source, a tool) is
-a **registered capability**.
+a **registered capability**. The driver, the vector backend, and the persistence
+Store are each swappable behind one interface (dashed = pluggable above).
 
 ## Quickstart
 
