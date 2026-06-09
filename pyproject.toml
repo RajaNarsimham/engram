@@ -33,9 +33,9 @@ dev = ["pytest>=8.0", "ruff>=0.6", "moto[s3,dynamodb]>=5.0"]
 all = ["engram[peft,rag,serve,aws]"]
 
 [project.urls]
-Homepage = "https://github.com/ENGRAM-OWNER/engram"
-Documentation = "https://github.com/ENGRAM-OWNER/engram/tree/main/docs"
-Issues = "https://github.com/ENGRAM-OWNER/engram/issues"
+Homepage = "https://github.com/RajaNarsimham/engram"
+Documentation = "https://github.com/RajaNarsimham/engram/tree/main/docs"
+Issues = "https://github.com/RajaNarsimham/engram/issues"
 
 [project.scripts]
 engram = "engram.cli:main"

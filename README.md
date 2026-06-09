@@ -77,6 +77,43 @@ Everything talks to the **Base-LLM Driver** interface — that's what makes base
 models plug-and-play. Everything you add (a skill, a knowledge source, a tool) is
 a **registered capability**.
 
+## Quickstart
+
+```bash
+pip install "engram[peft,rag]"        # + [serve] for the API, + [aws] for S3/DynamoDB
+```
+
+```python
+from engram.core import Engram
+
+eg = Engram("Qwen/Qwen3.5-4B")        # bring your own open-weight base model
+eg.teach("Project Zephyr ships March 3rd, 2026, led by Dana Okoro.")  # teach in-band → RAG instant
+print(eg.chat("When does Project Zephyr ship?").text())               # grounded answer + provenance
+eg.consolidate()                      # internalize it as an eval-gated skill adapter
+```
+
+Run it as a **normal OpenAI-compatible server**:
+
+```bash
+engram serve --model Qwen/Qwen3.5-4B  # → http://127.0.0.1:8000/v1
+```
+```bash
+curl localhost:8000/v1/teach -d '{"text":"Acme Q3 revenue was $4.2M."}'
+curl localhost:8000/v1/chat/completions \
+  -d '{"messages":[{"role":"user","content":"What was Acme Q3 revenue?"}]}'
+```
+Any OpenAI client/SDK works — point its base URL at `http://127.0.0.1:8000/v1`.
+
+### Persistence
+
+State (RAG index, skill registry, adapters) auto-persists and survives restart —
+**local files by default**, or **AWS S3 + DynamoDB** when configured:
+
+```bash
+export ENGRAM_S3_BUCKET=my-bucket
+export ENGRAM_DDB_TABLE=engram-registry   # optional; else the registry lives in S3
+```
+
 ## Status & roadmap
 
 Early and honest about it. Built solo; the research core is validated, the
