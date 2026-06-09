@@ -92,6 +92,8 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         tenant = ts.resolve(authorization.split(" ", 1)[1].strip())
         if tenant is None:
             raise HTTPException(status_code=401, detail="invalid api key")
+        if not eg().quotas.allow_request(tenant):
+            raise HTTPException(status_code=429, detail="rate limit exceeded")
         return tenant
 
     def scoped(tenant, requested):
@@ -125,15 +127,23 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         c = eg().rollback(req.name, project=scoped(tenant, req.project))
         return {"name": req.name, "status": c.status if c else "not_found"}
 
+    def _check_docs(tenant, project):
+        if tenant and not eg().quotas.within_limit(
+                tenant, "max_documents", len(eg().retriever(project).docs)):
+            raise HTTPException(status_code=429, detail="document quota exceeded")
+
     @app.post("/v1/teach")
     def teach(req: TeachRequest, tenant=Depends(auth)):
-        return eg().teach(req.text, project=scoped(tenant, req.project), name=req.name)
+        project = scoped(tenant, req.project)
+        _check_docs(tenant, project)
+        return eg().teach(req.text, project=project, name=req.name)
 
     @app.post("/v1/ingest")
     def ingest(req: IngestRequest, tenant=Depends(auth)):
+        project = scoped(tenant, req.project)
+        _check_docs(tenant, project)
         with eg().model_lock:
-            return eg().ingest(req.path, project=scoped(tenant, req.project),
-                               consolidate=req.consolidate)
+            return eg().ingest(req.path, project=project, consolidate=req.consolidate)
 
     @app.post("/v1/consolidate")
     def consolidate(tenant=Depends(auth)):

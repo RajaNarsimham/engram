@@ -16,6 +16,7 @@ import threading
 import warnings
 from typing import Any
 
+from engram.auth.quota import QuotaManager
 from engram.auth.tenants import TenantStore
 from engram.graph.store import KnowledgeGraph
 from engram.orchestrator.orchestrator import Answer, Orchestrator
@@ -63,6 +64,7 @@ class Engram:
                           "(a base must have softmax-attention layers to use retrieved context).")
         self.registry = Registry()
         self.tenants = TenantStore()                  # multi-tenant auth (FR-R4)
+        self.quotas = QuotaManager()                  # per-tenant rate/resource limits
         self.retrievers: dict[str, Retriever] = {}
         self.graphs: dict[str, KnowledgeGraph] = {}
         self.orch = Orchestrator(self.driver, self.registry, self.retrievers, self.driver.embed,
@@ -106,10 +108,11 @@ class Engram:
             self.store.push_registry(self.registry.export())
         return c
 
-    def add_tenant(self, name: str = "", project: str | None = None):
+    def add_tenant(self, name: str = "", project: str | None = None, quota: dict | None = None):
         """Mint a tenant + API key (returns the plaintext key once). Their `project`
-        is their isolated namespace; auth maps the key -> that project server-side."""
-        key, tenant = self.tenants.create(name=name, project=project)
+        is their isolated namespace; auth maps the key -> that project server-side.
+        `quota` may set requests_per_min / max_documents / max_skills."""
+        key, tenant = self.tenants.create(name=name, project=project, quota=quota)
         if self.auto_save:
             self.store.push_json("tenants", self.tenants.export())
         return key, tenant

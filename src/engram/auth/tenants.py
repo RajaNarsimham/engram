@@ -29,11 +29,11 @@ class TenantStore:
         self._by_hash: dict[str, Tenant] = {}     # sha256(api_key) -> Tenant
 
     def create(self, name: str = "", project: str | None = None,
-               tenant_id: str | None = None) -> tuple[str, Tenant]:
+               tenant_id: str | None = None, quota: dict | None = None) -> tuple[str, Tenant]:
         """Mint a new tenant + API key. Returns (plaintext_key, tenant). Key shown once."""
         tid = tenant_id or "t_" + secrets.token_hex(6)
         key = "engram_" + secrets.token_hex(24)
-        t = Tenant(tenant_id=tid, project=project or tid, name=name)
+        t = Tenant(tenant_id=tid, project=project or tid, name=name, quota=quota or {})
         self._by_hash[_hash(key)] = t
         return key, t
 

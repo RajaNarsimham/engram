@@ -120,12 +120,15 @@ Mint per-tenant API keys; each key is locked to its own **project namespace**, s
 isolation is enforced from the key (not from the request body):
 
 ```python
-key, tenant = eg.add_tenant(name="acme")    # plaintext key returned once; stored hashed
+key, tenant = eg.add_tenant(name="acme",      # plaintext key returned once; stored hashed
+                            quota={"requests_per_min": 60, "max_documents": 5000})
 # clients send:  Authorization: Bearer <key>  →  every call scoped to tenant.project
 ```
 
 Auth turns on automatically once any tenant exists (or force it with
 `create_app(..., require_auth=True)`). Without tenants, the server runs open.
+Quotas are enforced server-side: over the rate limit → `429`; over `max_documents`
+→ teach/ingest is rejected.
 
 ### Canary lifecycle
 
