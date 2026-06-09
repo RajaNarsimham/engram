@@ -68,6 +68,9 @@ class Retriever:
                 for s, j in zip(scores[0], idx[0]) if j >= 0 and s >= self.min_score]
         return hits  # may be empty by design (relevance-gate)
 
+    def count(self) -> int:
+        return len(self.docs)
+
     # ---- persistence -------------------------------------------------------------
     def save(self, dirpath: str) -> None:
         import json

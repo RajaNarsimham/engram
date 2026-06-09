@@ -129,7 +129,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
 
     def _check_docs(tenant, project):
         if tenant and not eg().quotas.within_limit(
-                tenant, "max_documents", len(eg().retriever(project).docs)):
+                tenant, "max_documents", eg().retriever(project).count()):
             raise HTTPException(status_code=429, detail="document quota exceeded")
 
     @app.post("/v1/teach")

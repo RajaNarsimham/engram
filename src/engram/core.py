@@ -47,9 +47,11 @@ class Engram:
                  store_dir: str = "engram_store", auto_save: bool = True,
                  load_on_start: bool = True, store: Any = None, canary: bool = False,
                  consolidation: str = "manual", consolidation_threshold: int = 4,
-                 consolidation_interval: float = 0.0):
+                 consolidation_interval: float = 0.0, vector_backend: Any = None):
         self.store_dir = store_dir
         self.auto_save = auto_save
+        self.vector_backend = vector_backend     # None/faiss (local) | qdrant | opensearch
+        self._projects: set[str] = set()
         self.model_lock = threading.RLock()      # serialize model use (serving vs training)
         # persistence backend: explicit `store`, else auto (AWS if env-configured, else files)
         self.store = make_store(store, work_dir=store_dir)
@@ -141,11 +143,15 @@ class Engram:
                         self.driver.load_lora(local, c.handle)
                     except Exception as e:                  # noqa: BLE001
                         warnings.warn(f"could not reload adapter {c.handle}: {e}")
-        for project in self.store.list_dirs("projects"):    # reload per-project RAG + graph
+        from engram.vectordb import make_retriever
+        projects = set(self.store.pull_json("projects", [])) | set(self.store.list_dirs("projects"))
+        for project in projects:                             # reload per-project RAG + graph
             d = self._proj_dir(project)
             self.store.pull_dir(f"projects/{project}", d)
-            self.retrievers[project] = Retriever(device=self.embed_device).load(d)
+            self.retrievers[project] = make_retriever(self.vector_backend, project=project,
+                                                      device=self.embed_device).load(d)
             self.graphs[project] = KnowledgeGraph().load(d)
+            self._projects.add(project)
 
     def reload(self) -> None:
         """Re-pull state from the shared Store so a stateless serving node picks up
@@ -154,15 +160,25 @@ class Engram:
         self.load()
 
     # ---- retrieval / graph stores (per project) ---------------------------------
-    def retriever(self, project: str = "default") -> Retriever:
+    def retriever(self, project: str = "default"):
         if project not in self.retrievers:
-            self.retrievers[project] = Retriever(device=self.embed_device)
+            from engram.vectordb import make_retriever
+            self.retrievers[project] = make_retriever(self.vector_backend, project=project,
+                                                      device=self.embed_device)
+            self._track_project(project)
         return self.retrievers[project]
 
     def graph(self, project: str = "default") -> KnowledgeGraph:
         if project not in self.graphs:
             self.graphs[project] = KnowledgeGraph()
+            self._track_project(project)
         return self.graphs[project]
+
+    def _track_project(self, project: str) -> None:
+        if project not in self._projects:
+            self._projects.add(project)
+            if self.auto_save:
+                self.store.push_json("projects", sorted(self._projects))
 
     # ---- the normal-LLM surface -------------------------------------------------
     def chat(self, messages, project: str = "default", **kw) -> Answer:

@@ -114,6 +114,23 @@ export ENGRAM_S3_BUCKET=my-bucket
 export ENGRAM_DDB_TABLE=engram-registry   # optional; else the registry lives in S3
 ```
 
+### Vector backend
+
+RAG vectors are pluggable the same way — local **FAISS** by default, or a real vector
+DB with no code change, just config:
+
+```bash
+export ENGRAM_VECTOR_BACKEND=qdrant       # + ENGRAM_QDRANT_URL=http://host:6333
+export ENGRAM_VECTOR_BACKEND=opensearch   # + ENGRAM_OPENSEARCH_ENDPOINT=...aoss.amazonaws.com  (AWS-native)
+```
+```python
+Engram(..., vector_backend={"type": "qdrant", "url": "http://localhost:6333"})
+```
+
+All backends share one interface (`add` / `retrieve` / `count`), so pgvector, S3
+Vectors, etc. drop in the same way — exactly like files-vs-S3/DynamoDB for the registry.
+(FAISS + Qdrant are validated; OpenSearch is written to the AWS API.)
+
 ### Multi-tenancy
 
 Mint per-tenant API keys; each key is locked to its own **project namespace**, so
