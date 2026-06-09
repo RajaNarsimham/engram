@@ -15,6 +15,7 @@ import os
 import warnings
 from typing import Any
 
+from engram.graph.store import KnowledgeGraph
 from engram.orchestrator.orchestrator import Answer, Orchestrator
 from engram.persistence import make_store
 from engram.registry.registry import CapabilityKind, Registry
@@ -57,7 +58,9 @@ class Engram:
                           "(a base must have softmax-attention layers to use retrieved context).")
         self.registry = Registry()
         self.retrievers: dict[str, Retriever] = {}
-        self.orch = Orchestrator(self.driver, self.registry, self.retrievers, self.driver.embed)
+        self.graphs: dict[str, KnowledgeGraph] = {}
+        self.orch = Orchestrator(self.driver, self.registry, self.retrievers, self.driver.embed,
+                                 graphs=self.graphs)
         # continual-learning loop (consolidation + eval-gate)
         if self.driver.capabilities().train_lora:
             from engram.consolidation.engine import ConsolidationEngine
@@ -69,7 +72,8 @@ class Engram:
             self._gate = self._consolidator = None
         # agentic mode: the model drives via tools (if the base supports tool-calling)
         from engram.orchestrator.agentic import AgenticOrchestrator
-        self.agent_orch = (AgenticOrchestrator(self.driver, self.registry, self.retrievers)
+        self.agent_orch = (AgenticOrchestrator(self.driver, self.registry, self.retrievers,
+                                               graphs=self.graphs)
                            if self.driver.capabilities().tool_use else None)
         if load_on_start:
             self.load()
@@ -84,6 +88,8 @@ class Engram:
         for project, r in self.retrievers.items():
             d = self._proj_dir(project)
             r.save(d)
+            if project in self.graphs:
+                self.graphs[project].save(d)
             self.store.push_dir(f"projects/{project}", d)
 
     def load(self) -> None:
@@ -98,16 +104,22 @@ class Engram:
                         self.driver.load_lora(local, c.handle)
                     except Exception as e:                  # noqa: BLE001
                         warnings.warn(f"could not reload adapter {c.handle}: {e}")
-        for project in self.store.list_dirs("projects"):    # reload per-project RAG
+        for project in self.store.list_dirs("projects"):    # reload per-project RAG + graph
             d = self._proj_dir(project)
             self.store.pull_dir(f"projects/{project}", d)
             self.retrievers[project] = Retriever(device=self.embed_device).load(d)
+            self.graphs[project] = KnowledgeGraph().load(d)
 
-    # ---- retrieval store (per project) ------------------------------------------
+    # ---- retrieval / graph stores (per project) ---------------------------------
     def retriever(self, project: str = "default") -> Retriever:
         if project not in self.retrievers:
             self.retrievers[project] = Retriever(device=self.embed_device)
         return self.retrievers[project]
+
+    def graph(self, project: str = "default") -> KnowledgeGraph:
+        if project not in self.graphs:
+            self.graphs[project] = KnowledgeGraph()
+        return self.graphs[project]
 
     # ---- the normal-LLM surface -------------------------------------------------
     def chat(self, messages, project: str = "default", **kw) -> Answer:
@@ -126,12 +138,17 @@ class Engram:
 
     # ---- in-band teaching (FR-C6) -----------------------------------------------
     def teach(self, text: str, project: str = "default", name: str | None = None,
-              metadata: dict | None = None) -> dict:
+              metadata: dict | None = None, graph: bool = False) -> dict:
         """Internalize knowledge. RAG ingestion is IMMEDIATE (available next turn);
-        skill-adapter internalization is QUEUED for consolidation (async)."""
+        skill-adapter internalization is QUEUED for consolidation (async).
+        graph=True also extracts (subject, relation, object) triples into the graph."""
         docs = _chunk(text)
         self.retriever(project).add(docs, metas=[metadata] * len(docs) if metadata else None)
         result = {"rag_ingested": len(docs), "available_now": True}
+        if graph:
+            from engram.graph.extract import extract_triples
+            result["graph_triples"] = self.graph(project).add_many(
+                extract_triples(self.driver, text), meta=metadata)
         if self._consolidator is not None:
             result["lora_job"] = self._consolidator.enqueue(text, project=project, name=name)
             result["lora_status"] = "queued (run consolidate() to internalize)"
@@ -140,15 +157,21 @@ class Engram:
         if self.auto_save:
             d = self._proj_dir(project)
             self.retriever(project).save(d)
-            self.store.push_dir(f"projects/{project}", d)           # RAG survives restart
+            if project in self.graphs:
+                self.graphs[project].save(d)
+            self.store.push_dir(f"projects/{project}", d)           # RAG + graph survive restart
         return result
 
-    def ingest(self, source, project: str = "default", consolidate: bool = False) -> dict:
+    def ingest(self, source, project: str = "default", consolidate: bool = False,
+               graph: bool = False) -> dict:
         """Ingest a file/directory path or a Connector into RAG (FR-C17).
-        consolidate=True also queues each document for skill internalization."""
+        consolidate=True queues each doc for skill internalization;
+        graph=True extracts (subject, relation, object) triples into the graph (FR-C18)."""
         from engram.connectors.files import to_connector
         conn = to_connector(source)
-        n_docs = n_chunks = 0
+        if graph:
+            from engram.graph.extract import extract_triples
+        n_docs = n_chunks = n_triples = 0
         for doc in conn.documents():
             chunks = _chunk(doc.text)
             if not chunks:
@@ -156,13 +179,20 @@ class Engram:
             self.retriever(project).add(chunks, metas=[doc.metadata] * len(chunks))
             n_docs += 1
             n_chunks += len(chunks)
+            if graph:
+                n_triples += self.graph(project).add_many(
+                    extract_triples(self.driver, doc.text), meta=doc.metadata)
             if consolidate and self._consolidator is not None:
                 self._consolidator.enqueue(doc.text, project=project)
         if self.auto_save and n_docs:
             d = self._proj_dir(project)
             self.retriever(project).save(d)
+            if project in self.graphs:
+                self.graphs[project].save(d)
             self.store.push_dir(f"projects/{project}", d)
         res = {"documents": n_docs, "chunks": n_chunks, "available_now": True}
+        if graph:
+            res["graph_triples"] = n_triples
         if consolidate:
             res["lora_status"] = "queued (run consolidate() to internalize)"
         return res

@@ -38,13 +38,14 @@ def _cos(a, b) -> float:
 class Orchestrator:
     def __init__(self, driver: BaseLLMDriver, registry: Registry,
                  retrievers: dict[str, Retriever], embed_fn: Callable,
-                 route_threshold: float = 0.30, k: int = 3):
+                 route_threshold: float = 0.30, k: int = 3, graphs: dict | None = None):
         self.driver = driver
         self.registry = registry
         self.retrievers = retrievers
         self.embed_fn = embed_fn
         self.route_threshold = route_threshold
         self.k = k
+        self.graphs = graphs if graphs is not None else {}
 
     def _route(self, query: str, project: str) -> tuple[str | None, float]:
         skills = [c for c in self.registry.list(project=project, kind=CapabilityKind.SKILL,
@@ -56,11 +57,14 @@ class Orchestrator:
         name, score = max(scored, key=lambda t: t[1])
         return (name, score) if score >= self.route_threshold else (None, score)
 
-    def _assemble(self, messages, hits: list[Hit]):
+    def _assemble(self, messages, hits: list[Hit], gfacts=()):
         sys = _SYS
         if hits:
             ctx = "\n".join(f"[{i+1}] {h.doc}" for i, h in enumerate(hits))
             sys = f"{sys}\n\nContext:\n{ctx}"
+        if gfacts:
+            facts = "\n".join(f"- {f}" for f in gfacts)
+            sys = f"{sys}\n\nKnowledge graph facts:\n{facts}"
         return [{"role": "system", "content": sys}, *messages]
 
     def answer(self, messages, project: str = "default", max_new_tokens: int = 512,
@@ -68,10 +72,12 @@ class Orchestrator:
         query = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "")
         retr = self.retrievers.get(project)
         hits = retr.retrieve(query, self.k) if retr else []
+        graph = self.graphs.get(project)
+        gfacts = graph.query(query) if graph else []
         skill, score = self._route(query, project)
-        msgs = self._assemble(messages, hits)
+        msgs = self._assemble(messages, hits, gfacts)
         req = GenRequest(messages=msgs, lora_ids=(skill,) if skill else (),
                          max_new_tokens=max_new_tokens, temperature=temperature)
         prov = {"docs": [h.doc for h in hits], "scores": [round(h.score, 3) for h in hits],
-                "skill": skill, "route_score": round(score, 3)}
+                "skill": skill, "route_score": round(score, 3), "graph_facts": gfacts}
         return Answer(provenance=prov, stream=self.driver.generate(req))

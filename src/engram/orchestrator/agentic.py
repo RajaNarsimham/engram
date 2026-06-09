@@ -43,6 +43,18 @@ SEARCH_TOOL = {
     },
 }
 
+GRAPH_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "graph_search",
+        "description": "Look up connected facts about an entity in the knowledge graph "
+                       "(relationships, multi-hop). Use for 'who/what relates to X' questions.",
+        "parameters": {"type": "object",
+                       "properties": {"entity": {"type": "string", "description": "entity/topic to look up"}},
+                       "required": ["entity"]},
+    },
+}
+
 
 @dataclass
 class AgentResult:
@@ -53,15 +65,18 @@ class AgentResult:
 
 class AgenticOrchestrator:
     def __init__(self, driver: BaseLLMDriver, registry: Registry, retrievers: dict,
-                 k: int = 3, max_iters: int = 4):
+                 k: int = 3, max_iters: int = 4, graphs: dict | None = None):
         self.driver = driver
         self.registry = registry
         self.retrievers = retrievers
         self.k = k
         self.max_iters = max_iters
+        self.graphs = graphs if graphs is not None else {}
 
     def _tools(self, project):
         tools = [SEARCH_TOOL]
+        if self.graphs.get(project) and len(self.graphs[project]):
+            tools.append(GRAPH_TOOL)
         tools += [c.as_tool_spec()
                   for c in self.registry.list(project=project, kind=CapabilityKind.TOOL, live_only=True)]
         return tools
@@ -70,6 +85,9 @@ class AgenticOrchestrator:
         if name == "search_knowledge":
             r = self.retrievers.get(project)
             return [h.doc for h in r.retrieve(args.get("query", ""), self.k)] if r else []
+        if name == "graph_search":
+            g = self.graphs.get(project)
+            return g.query(args.get("entity", ""), hops=2) if g else []
         cap = self.registry.get(name, project=project)
         if cap and cap.kind == CapabilityKind.TOOL and callable(cap.handle):
             try:
