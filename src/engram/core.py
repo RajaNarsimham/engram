@@ -176,6 +176,14 @@ class Engram:
             raise RuntimeError("base model does not support tool use (agentic mode unavailable)")
         return self.agent_orch.run(messages, project=project, **kw)
 
+    def run_stream(self, messages, project: str = "default", **kw):
+        """Streaming agentic mode — yields content/tool events (AgenticOrchestrator.run_stream)."""
+        if isinstance(messages, str):
+            messages = [{"role": "user", "content": messages}]
+        if self.agent_orch is None:
+            raise RuntimeError("base model does not support tool use (agentic mode unavailable)")
+        return self.agent_orch.run_stream(messages, project=project, **kw)
+
     # ---- in-band teaching (FR-C6) -----------------------------------------------
     def teach(self, text: str, project: str = "default", name: str | None = None,
               metadata: dict | None = None, graph: bool = False) -> dict:

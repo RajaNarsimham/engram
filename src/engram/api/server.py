@@ -146,6 +146,23 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         model, cid = req.model, "chatcmpl-" + uuid.uuid4().hex[:24]
         project = scoped(tenant, req.project)
 
+        if req.agentic and req.stream:        # streaming tool loop (content + tool events)
+            def agent_stream():
+                with eg().model_lock:
+                    yield _sse(cid, model, delta={"role": "assistant"})
+                    for ev in eg().run_stream(messages, project=project, max_new_tokens=req.max_tokens):
+                        if ev["type"] == "content":
+                            yield _sse(cid, model, delta={"content": ev["text"]})
+                        elif ev["type"] == "tool_call":
+                            yield _sse(cid, model, delta={}, extra={"engram": {"tool_call": ev["calls"]}})
+                        elif ev["type"] == "tool_result":
+                            yield _sse(cid, model, delta={},
+                                       extra={"engram": {"tool_result": {"name": ev["name"],
+                                                                         "result": ev["result"]}}})
+                    yield _sse(cid, model, delta={}, finish="stop")
+                    yield "data: [DONE]\n\n"
+            return StreamingResponse(agent_stream(), media_type="text/event-stream")
+
         if req.agentic:                       # model-driven tool loop (non-streaming)
             with eg().model_lock:
                 r = eg().run(messages, project=project, max_new_tokens=req.max_tokens)

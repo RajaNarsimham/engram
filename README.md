@@ -181,7 +181,7 @@ platform is being assembled in tiers:
   retrieval, adapter train/route, consolidation + eval-gate, OpenAI-compatible
   server, pluggable persistence (local files or AWS S3 + DynamoDB).
 - **Tier 1 — platform** *(core complete)*: ✅ document connectors (files/dirs/pdf/
-  html/code) · ✅ agentic orchestration (model-driven tool loop) · ✅ knowledge
+  html/code) · ✅ agentic orchestration (streaming model-driven tool loop) · ✅ knowledge
   graph + GraphRAG (multi-hop retrieval) · ✅ multi-tenancy + API-key auth
   (per-tenant project isolation) · ✅ canary lifecycle (staged skill promotion)
   · ✅ elastic serving (vLLM backend + stateless multi-node on a shared store).

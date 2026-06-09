@@ -135,3 +135,47 @@ class AgenticOrchestrator:
         out = "".join(self.driver.generate(
             GenRequest(messages=convo, max_new_tokens=max_new_tokens))).strip()
         return AgentResult(answer=out, trace=trace, iterations=self.max_iters)
+
+    def run_stream(self, messages, project: str = "default", max_new_tokens: int = 512):
+        """Streaming agent loop. Yields events:
+          {"type": "content", "text": ...}     final-answer tokens (streamed)
+          {"type": "tool_call", "calls": ...}  a tool step is happening
+          {"type": "tool_result", "name", "result"}
+          {"type": "done"}
+        Content emission holds back a dangling '<...' so a tool-call marker never leaks.
+        """
+        tools = self._tools(project)
+        convo = list(messages)
+        for _ in range(self.max_iters):
+            buf, emitted, is_tool = "", 0, False
+            for chunk in self.driver.generate(
+                    GenRequest(messages=convo, tools=tools, max_new_tokens=max_new_tokens)):
+                buf += chunk
+                if "<tool_call>" in buf or "<function=" in buf:
+                    is_tool = True
+                if not is_tool:
+                    pending = buf[emitted:]
+                    cut = pending.rfind("<")                 # hold back an unclosed '<...'
+                    safe = pending[:cut] if (cut != -1 and ">" not in pending[cut:]) else pending
+                    if safe:
+                        yield {"type": "content", "text": safe}
+                        emitted += len(safe)
+            calls = self._parse(buf)
+            if not calls:
+                tail = buf[emitted:]
+                if tail and not is_tool:
+                    yield {"type": "content", "text": tail}
+                yield {"type": "done"}
+                return
+            yield {"type": "tool_call", "calls": calls}
+            convo.append({"role": "assistant", "content": "",
+                          "tool_calls": [{"type": "function",
+                                          "function": {"name": c["name"], "arguments": c["arguments"]}}
+                                         for c in calls]})
+            for c in calls:
+                result = self._execute(c["name"], c["arguments"], project)
+                yield {"type": "tool_result", "name": c["name"], "result": result}
+                convo.append({"role": "tool", "name": c["name"], "content": json.dumps(result)[:4000]})
+        for chunk in self.driver.generate(GenRequest(messages=convo, max_new_tokens=max_new_tokens)):
+            yield {"type": "content", "text": chunk}
+        yield {"type": "done"}

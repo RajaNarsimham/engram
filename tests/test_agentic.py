@@ -79,3 +79,41 @@ def test_registered_tool_is_called():
     res = AgenticOrchestrator(driver, reg, {}).run([{"role": "user", "content": "2+3?"}])
     assert res.trace[0]["result"] == 5
     assert res.answer == "The sum is 5."
+
+
+# ---- streaming agent ---------------------------------------------------------
+def test_run_stream_tool_then_streamed_answer():
+    driver = ScriptedDriver([
+        '<tool_call>{"name": "search_knowledge", "arguments": {"query": "x"}}</tool_call>',
+        "The answer is 42.",
+    ])
+    retr = {"default": FakeRetriever(["doc text"])}
+    events = list(AgenticOrchestrator(driver, Registry(), retr).run_stream(
+        [{"role": "user", "content": "q"}], project="default"))
+    types = [e["type"] for e in events]
+    assert "tool_call" in types and "tool_result" in types
+    content = "".join(e["text"] for e in events if e["type"] == "content")
+    assert content == "The answer is 42."
+    assert events[-1]["type"] == "done"
+
+
+def test_run_stream_direct_answer_streams_content():
+    driver = ScriptedDriver(["Paris is the capital."])
+    events = list(AgenticOrchestrator(driver, Registry(), {}).run_stream(
+        [{"role": "user", "content": "q"}]))
+    content = "".join(e["text"] for e in events if e["type"] == "content")
+    assert content == "Paris is the capital."
+    assert [e["type"] for e in events if e["type"] != "content"] == ["done"]
+
+
+def test_run_stream_never_leaks_tool_marker():
+    driver = ScriptedDriver([
+        "<function=search_knowledge><parameter=query>x</parameter></function>",
+        "Final.",
+    ])
+    retr = {"default": FakeRetriever(["d"])}
+    events = list(AgenticOrchestrator(driver, Registry(), retr).run_stream(
+        [{"role": "user", "content": "q"}], project="default"))
+    content = "".join(e["text"] for e in events if e["type"] == "content")
+    assert "<function" not in content and "<tool_call" not in content
+    assert content == "Final."
