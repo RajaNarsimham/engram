@@ -67,3 +67,26 @@ class Retriever:
         hits = [Hit(self.docs[j], float(s), self.meta[j])
                 for s, j in zip(scores[0], idx[0]) if j >= 0 and s >= self.min_score]
         return hits  # may be empty by design (relevance-gate)
+
+    # ---- persistence -------------------------------------------------------------
+    def save(self, dirpath: str) -> None:
+        import json
+        import os
+        os.makedirs(dirpath, exist_ok=True)
+        if self.index is not None:
+            self._faiss.write_index(self.index, os.path.join(dirpath, "index.faiss"))
+        with open(os.path.join(dirpath, "docs.json"), "w", encoding="utf-8") as f:
+            json.dump({"docs": self.docs, "meta": self.meta}, f)
+
+    def load(self, dirpath: str) -> "Retriever":
+        import json
+        import os
+        dp = os.path.join(dirpath, "docs.json")
+        ip = os.path.join(dirpath, "index.faiss")
+        if os.path.exists(dp):
+            with open(dp, encoding="utf-8") as f:
+                d = json.load(f)
+            self.docs, self.meta = d["docs"], d["meta"]
+        if os.path.exists(ip):
+            self.index = self._faiss.read_index(ip)
+        return self

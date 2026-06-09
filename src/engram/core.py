@@ -11,11 +11,12 @@ Needs the peft + rag extras:  pip install "engram[peft,rag]"
 """
 from __future__ import annotations
 
+import os
 import warnings
 from typing import Any
 
 from engram.orchestrator.orchestrator import Answer, Orchestrator
-from engram.registry.registry import Registry
+from engram.registry.registry import CapabilityKind, Registry
 from engram.retrieval.retriever import Retriever
 
 
@@ -37,10 +38,14 @@ def _chunk(text: str, size: int = 600) -> list[str]:
 
 class Engram:
     def __init__(self, model_id: str | None = None, device: str = "cuda:0",
-                 driver: Any = None, embed_device: str | None = None):
+                 driver: Any = None, embed_device: str | None = None,
+                 store_dir: str = "engram_store", auto_save: bool = True,
+                 load_on_start: bool = True):
+        self.store_dir = store_dir
+        self.auto_save = auto_save
         if driver is None:
             from engram.drivers.peft_driver import PEFTDriver
-            driver = PEFTDriver(model_id, device)
+            driver = PEFTDriver(model_id, device, adapter_dir=os.path.join(store_dir, "adapters"))
         self.driver = driver
         self.embed_device = embed_device or device
         arch = self.driver.arch_info()
@@ -59,6 +64,35 @@ class Engram:
                 self.driver, self.registry, self.driver.embed, self._gate)
         else:
             self._gate = self._consolidator = None
+        if load_on_start:
+            self.load()
+
+    # ---- persistence (state survives restart) -----------------------------------
+    def _proj_dir(self, project: str) -> str:
+        return os.path.join(self.store_dir, "projects", project)
+
+    def save(self) -> None:
+        os.makedirs(self.store_dir, exist_ok=True)
+        self.registry.save(os.path.join(self.store_dir, "registry.json"))
+        for project, r in self.retrievers.items():
+            r.save(self._proj_dir(project))
+
+    def load(self) -> None:
+        self.registry.load(os.path.join(self.store_dir, "registry.json"))
+        adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
+        for c in self.registry.all():                       # reload skill adapters
+            if c.kind == CapabilityKind.SKILL and c.handle:
+                ap = os.path.join(adir, c.handle)
+                if os.path.isdir(ap):
+                    try:
+                        self.driver.load_lora(ap, c.handle)
+                    except Exception as e:                  # noqa: BLE001
+                        warnings.warn(f"could not reload adapter {c.handle}: {e}")
+        projdir = os.path.join(self.store_dir, "projects")
+        if os.path.isdir(projdir):
+            for project in os.listdir(projdir):
+                self.retrievers[project] = Retriever(device=self.embed_device).load(
+                    self._proj_dir(project))
 
     # ---- retrieval store (per project) ------------------------------------------
     def retriever(self, project: str = "default") -> Retriever:
@@ -85,6 +119,8 @@ class Engram:
             result["lora_status"] = "queued (run consolidate() to internalize)"
         else:
             result["lora_job"] = None
+        if self.auto_save:
+            self.retriever(project).save(self._proj_dir(project))   # RAG survives restart
         return result
 
     def consolidate(self) -> list[dict]:
@@ -92,4 +128,7 @@ class Engram:
         register skill. (Tier-0 synchronous; Tier-1 = async/scheduled/threshold policy.)"""
         if self._consolidator is None:
             return []
-        return self._consolidator.process_all()
+        results = self._consolidator.process_all()
+        if self.auto_save:
+            self.registry.save(os.path.join(self.store_dir, "registry.json"))  # skills survive restart
+        return results
