@@ -136,6 +136,12 @@ class Engram:
             self.retrievers[project] = Retriever(device=self.embed_device).load(d)
             self.graphs[project] = KnowledgeGraph().load(d)
 
+    def reload(self) -> None:
+        """Re-pull state from the shared Store so a stateless serving node picks up
+        skills/knowledge produced on another node. Idempotent (registry/tenants
+        overwrite by key; retrievers/graphs are rebuilt). Enables horizontal scale."""
+        self.load()
+
     # ---- retrieval / graph stores (per project) ---------------------------------
     def retriever(self, project: str = "default") -> Retriever:
         if project not in self.retrievers:

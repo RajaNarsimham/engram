@@ -141,6 +141,24 @@ eg.promote("skill_id")        # → live (100%)     eg.rollback("skill_id") → 
 Over the API: `POST /v1/promote` / `POST /v1/rollback`; `GET /v1/capabilities` shows
 each skill's `status` and `served` count.
 
+### Elastic / horizontal scale
+
+Split training and serving across node types that share one S3/DynamoDB store:
+
+- a **PEFTDriver** node runs consolidation (trains skill adapters),
+- **VLLMDriver** nodes serve the base + adapters under continuous batching
+  (high-throughput multi-LoRA), loading adapters from the shared store,
+- nodes are **stateless** — point them at the same `store=` and call `eg.reload()`
+  to pick up skills/knowledge produced elsewhere, so serving scales behind a load balancer.
+
+```python
+# serving node (Linux + CUDA + vLLM):  pip install "engram[vllm]"
+from engram.drivers.vllm_driver import VLLMDriver
+eg = Engram(driver=VLLMDriver("Qwen/Qwen3.5-4B"), store={"type": "aws", "bucket": "..."})
+```
+
+(vLLM is inference-only and Linux-only — train on a PEFTDriver node.)
+
 ## Status & roadmap
 
 Early and honest about it. Built solo; the research core is validated, the
@@ -149,11 +167,11 @@ platform is being assembled in tiers:
 - **Tier 0 — core** ✅: driver interface, capability registry, orchestrator,
   retrieval, adapter train/route, consolidation + eval-gate, OpenAI-compatible
   server, pluggable persistence (local files or AWS S3 + DynamoDB).
-- **Tier 1 — platform** *(in progress)*: ✅ document connectors (files/dirs/pdf/
+- **Tier 1 — platform** *(core complete)*: ✅ document connectors (files/dirs/pdf/
   html/code) · ✅ agentic orchestration (model-driven tool loop) · ✅ knowledge
   graph + GraphRAG (multi-hop retrieval) · ✅ multi-tenancy + API-key auth
   (per-tenant project isolation) · ✅ canary lifecycle (staged skill promotion)
-  · ⏳ elastic serving.
+  · ✅ elastic serving (vLLM backend + stateless multi-node on a shared store).
 - **Tier 2 — compliance**: SOC2 → HIPAA/GDPR/FedRAMP (design-for now).
 
 All Tier-0/1 capabilities above are validated end-to-end on a real model
