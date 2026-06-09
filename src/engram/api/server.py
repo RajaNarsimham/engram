@@ -47,6 +47,12 @@ class TeachRequest(BaseModel):
     name: Optional[str] = None
 
 
+class IngestRequest(BaseModel):
+    path: str                              # server-side file or directory path
+    project: str = "default"
+    consolidate: bool = False
+
+
 def _sse(cid, model, delta=None, finish=None, extra=None) -> str:
     ch = {"id": cid, "object": "chat.completion.chunk", "created": int(time.time()),
           "model": model, "choices": [{"index": 0, "delta": delta or {}, "finish_reason": finish}]}
@@ -87,6 +93,11 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
     @app.post("/v1/teach")
     def teach(req: TeachRequest):
         return eg().teach(req.text, project=req.project, name=req.name)
+
+    @app.post("/v1/ingest")
+    def ingest(req: IngestRequest):
+        with lock:
+            return eg().ingest(req.path, project=req.project, consolidate=req.consolidate)
 
     @app.post("/v1/consolidate")
     def consolidate():

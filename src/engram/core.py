@@ -130,6 +130,30 @@ class Engram:
             self.store.push_dir(f"projects/{project}", d)           # RAG survives restart
         return result
 
+    def ingest(self, source, project: str = "default", consolidate: bool = False) -> dict:
+        """Ingest a file/directory path or a Connector into RAG (FR-C17).
+        consolidate=True also queues each document for skill internalization."""
+        from engram.connectors.files import to_connector
+        conn = to_connector(source)
+        n_docs = n_chunks = 0
+        for doc in conn.documents():
+            chunks = _chunk(doc.text)
+            if not chunks:
+                continue
+            self.retriever(project).add(chunks, metas=[doc.metadata] * len(chunks))
+            n_docs += 1
+            n_chunks += len(chunks)
+            if consolidate and self._consolidator is not None:
+                self._consolidator.enqueue(doc.text, project=project)
+        if self.auto_save and n_docs:
+            d = self._proj_dir(project)
+            self.retriever(project).save(d)
+            self.store.push_dir(f"projects/{project}", d)
+        res = {"documents": n_docs, "chunks": n_chunks, "available_now": True}
+        if consolidate:
+            res["lora_status"] = "queued (run consolidate() to internalize)"
+        return res
+
     def consolidate(self) -> list[dict]:
         """Run the queued learning jobs: self-distill -> train adapter -> eval-gate ->
         register skill. (Tier-0 synchronous; Tier-1 = async/scheduled/threshold policy.)"""
