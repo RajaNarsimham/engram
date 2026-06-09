@@ -32,6 +32,10 @@ class Store(ABC):
     def pull_dir(self, key: str, local_dir: str) -> bool: ...   # True if the key existed
     @abstractmethod
     def list_dirs(self, prefix: str) -> list[str]: ...          # immediate subkeys under prefix
+    @abstractmethod
+    def push_json(self, key: str, obj) -> None: ...             # arbitrary JSON (tenants, config)
+    @abstractmethod
+    def pull_json(self, key: str, default=None): ...
 
 
 class FileStore(Store):
@@ -76,3 +80,14 @@ class FileStore(Store):
     def list_dirs(self, prefix: str) -> list[str]:
         d = os.path.join(self.root, *prefix.split("/"))
         return sorted(n for n in os.listdir(d)) if os.path.isdir(d) else []
+
+    def push_json(self, key: str, obj) -> None:
+        with open(os.path.join(self.root, f"{key}.json"), "w", encoding="utf-8") as f:
+            json.dump(obj, f)
+
+    def pull_json(self, key: str, default=None):
+        p = os.path.join(self.root, f"{key}.json")
+        if not os.path.exists(p):
+            return default
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)

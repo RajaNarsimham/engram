@@ -114,6 +114,19 @@ export ENGRAM_S3_BUCKET=my-bucket
 export ENGRAM_DDB_TABLE=engram-registry   # optional; else the registry lives in S3
 ```
 
+### Multi-tenancy
+
+Mint per-tenant API keys; each key is locked to its own **project namespace**, so
+isolation is enforced from the key (not from the request body):
+
+```python
+key, tenant = eg.add_tenant(name="acme")    # plaintext key returned once; stored hashed
+# clients send:  Authorization: Bearer <key>  →  every call scoped to tenant.project
+```
+
+Auth turns on automatically once any tenant exists (or force it with
+`create_app(..., require_auth=True)`). Without tenants, the server runs open.
+
 ## Status & roadmap
 
 Early and honest about it. Built solo; the research core is validated, the
@@ -124,8 +137,8 @@ platform is being assembled in tiers:
   server, pluggable persistence (local files or AWS S3 + DynamoDB).
 - **Tier 1 — platform** *(in progress)*: ✅ document connectors (files/dirs/pdf/
   html/code) · ✅ agentic orchestration (model-driven tool loop) · ✅ knowledge
-  graph + GraphRAG (multi-hop retrieval) · ⏳ multi-tenancy, canary lifecycle,
-  elastic serving.
+  graph + GraphRAG (multi-hop retrieval) · ✅ multi-tenancy + API-key auth
+  (per-tenant project isolation) · ⏳ canary lifecycle, elastic serving.
 - **Tier 2 — compliance**: SOC2 → HIPAA/GDPR/FedRAMP (design-for now).
 
 All Tier-0/1 capabilities above are validated end-to-end on a real model

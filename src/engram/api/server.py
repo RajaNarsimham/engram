@@ -20,7 +20,7 @@ import uuid
 from typing import Optional
 
 try:
-    from fastapi import FastAPI
+    from fastapi import Depends, FastAPI, Header, HTTPException
     from fastapi.responses import StreamingResponse
     from pydantic import BaseModel
 except ImportError as e:  # pragma: no cover
@@ -62,7 +62,8 @@ def _sse(cid, model, delta=None, finish=None, extra=None) -> str:
     return f"data: {json.dumps(ch)}\n\n"
 
 
-def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0") -> "FastAPI":
+def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
+               require_auth: bool | None = None) -> "FastAPI":
     app = FastAPI(title="Engram", version="0.0.1",
                   description="Continual-learning harness for open-weight LLMs")
     lock = threading.Lock()
@@ -76,6 +77,24 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
             app.state.eg = Engram(mid, device=dev)
         return app.state.eg
 
+    def auth(authorization: str = Header(None)):
+        """Resolve the tenant from the Bearer key. Required when tenants exist (or
+        require_auth=True). Returns the Tenant, or None in open mode."""
+        ts = eg().tenants
+        need = require_auth if require_auth is not None else (len(ts) > 0)
+        if not need:
+            return None
+        if not authorization or not authorization.lower().startswith("bearer "):
+            raise HTTPException(status_code=401, detail="missing bearer token")
+        tenant = ts.resolve(authorization.split(" ", 1)[1].strip())
+        if tenant is None:
+            raise HTTPException(status_code=401, detail="invalid api key")
+        return tenant
+
+    def scoped(tenant, requested):
+        """A tenant can only touch its own project — derived from the key, not the body."""
+        return tenant.project if tenant else requested
+
     @app.get("/healthz")
     def healthz():
         return {"status": "ok"}
@@ -86,33 +105,36 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
                 "data": [{"id": "engram", "object": "model", "owned_by": "engram"}]}
 
     @app.get("/v1/capabilities")
-    def capabilities(project: str = "default"):
+    def capabilities(project: str = "default", tenant=Depends(auth)):
+        project = scoped(tenant, project)
         return {"capabilities": [
             {"name": c.name, "kind": c.kind.value, "description": c.description, "live": c.eval_passed}
             for c in eg().registry.list(project=project)]}
 
     @app.post("/v1/teach")
-    def teach(req: TeachRequest):
-        return eg().teach(req.text, project=req.project, name=req.name)
+    def teach(req: TeachRequest, tenant=Depends(auth)):
+        return eg().teach(req.text, project=scoped(tenant, req.project), name=req.name)
 
     @app.post("/v1/ingest")
-    def ingest(req: IngestRequest):
+    def ingest(req: IngestRequest, tenant=Depends(auth)):
         with lock:
-            return eg().ingest(req.path, project=req.project, consolidate=req.consolidate)
+            return eg().ingest(req.path, project=scoped(tenant, req.project),
+                               consolidate=req.consolidate)
 
     @app.post("/v1/consolidate")
-    def consolidate():
+    def consolidate(tenant=Depends(auth)):
         with lock:
             return {"results": eg().consolidate()}
 
     @app.post("/v1/chat/completions")
-    def chat(req: ChatRequest):
+    def chat(req: ChatRequest, tenant=Depends(auth)):
         messages = [m.model_dump() for m in req.messages]
         model, cid = req.model, "chatcmpl-" + uuid.uuid4().hex[:24]
+        project = scoped(tenant, req.project)
 
         if req.agentic:                       # model-driven tool loop (non-streaming)
             with lock:
-                r = eg().run(messages, project=req.project, max_new_tokens=req.max_tokens)
+                r = eg().run(messages, project=project, max_new_tokens=req.max_tokens)
             return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,
                     "choices": [{"index": 0, "message": {"role": "assistant", "content": r.answer},
                                  "finish_reason": "stop"}],
@@ -122,7 +144,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
         if req.stream:
             def stream():
                 with lock:
-                    ans = eg().chat(messages, project=req.project,
+                    ans = eg().chat(messages, project=project,
                                     max_new_tokens=req.max_tokens, temperature=req.temperature)
                     yield _sse(cid, model, delta={"role": "assistant"},
                                extra={"engram": {"provenance": ans.provenance}})
@@ -133,7 +155,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0")
             return StreamingResponse(stream(), media_type="text/event-stream")
 
         with lock:
-            ans = eg().chat(messages, project=req.project,
+            ans = eg().chat(messages, project=project,
                             max_new_tokens=req.max_tokens, temperature=req.temperature)
             text = ans.text()
         return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,

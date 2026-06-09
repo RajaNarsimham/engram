@@ -78,3 +78,14 @@ class AWSStore:  # implements engram.persistence.store.Store (duck-typed to avoi
         pfx = self._k(prefix.rstrip("/") + "/")
         resp = self.s3.list_objects_v2(Bucket=self.bucket, Prefix=pfx, Delimiter="/")
         return sorted(cp["Prefix"][len(pfx):].rstrip("/") for cp in resp.get("CommonPrefixes", []))
+
+    def push_json(self, key: str, obj) -> None:
+        self.s3.put_object(Bucket=self.bucket, Key=self._k(f"{key}.json"),
+                           Body=json.dumps(obj).encode())
+
+    def pull_json(self, key: str, default=None):
+        try:
+            o = self.s3.get_object(Bucket=self.bucket, Key=self._k(f"{key}.json"))
+            return json.loads(o["Body"].read())
+        except Exception:                                          # noqa: BLE001
+            return default

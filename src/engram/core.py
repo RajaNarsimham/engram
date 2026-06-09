@@ -15,6 +15,7 @@ import os
 import warnings
 from typing import Any
 
+from engram.auth.tenants import TenantStore
 from engram.graph.store import KnowledgeGraph
 from engram.orchestrator.orchestrator import Answer, Orchestrator
 from engram.persistence import make_store
@@ -57,6 +58,7 @@ class Engram:
             warnings.warn("base model is NOT induction-capable; RAG context-use may fail "
                           "(a base must have softmax-attention layers to use retrieved context).")
         self.registry = Registry()
+        self.tenants = TenantStore()                  # multi-tenant auth (FR-R4)
         self.retrievers: dict[str, Retriever] = {}
         self.graphs: dict[str, KnowledgeGraph] = {}
         self.orch = Orchestrator(self.driver, self.registry, self.retrievers, self.driver.embed,
@@ -82,9 +84,18 @@ class Engram:
     def _proj_dir(self, project: str) -> str:
         return os.path.join(self.store_dir, "projects", project)
 
+    def add_tenant(self, name: str = "", project: str | None = None):
+        """Mint a tenant + API key (returns the plaintext key once). Their `project`
+        is their isolated namespace; auth maps the key -> that project server-side."""
+        key, tenant = self.tenants.create(name=name, project=project)
+        if self.auto_save:
+            self.store.push_json("tenants", self.tenants.export())
+        return key, tenant
+
     def save(self) -> None:
         os.makedirs(self.store_dir, exist_ok=True)
         self.store.push_registry(self.registry.export())
+        self.store.push_json("tenants", self.tenants.export())
         for project, r in self.retrievers.items():
             d = self._proj_dir(project)
             r.save(d)
@@ -94,6 +105,7 @@ class Engram:
 
     def load(self) -> None:
         self.registry.import_records(self.store.pull_registry())
+        self.tenants.import_records(self.store.pull_json("tenants", []))
         adir = getattr(self.driver, "adapter_dir", os.path.join(self.store_dir, "adapters"))
         for c in self.registry.all():                       # reload skill adapters
             if c.kind == CapabilityKind.SKILL and c.handle:
