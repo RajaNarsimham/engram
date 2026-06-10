@@ -48,9 +48,12 @@ model. The non-obvious findings baked into the architecture:
 - **RAG = retrieval + induction.** A base model must be able to *use* retrieved
   context (an induction-head capability). Open instruct models have it; Engram
   checks for it.
-- **RAG beats fine-tuning for *fresh* facts** — on a real 4B model, retrieval
-  answered brand-new facts at ~88% while a fine-tuned model scored 0% (it never
-  saw them). **Facts → retrieval, skills → adapters.**
+- **RAG beats fine-tuning for facts — even facts the LoRA *was* trained on.** On a
+  real 4B model, retrieval answered fresh facts at ~88% (a fine-tuned model: 0% — it
+  never saw them); and even for *trained* facts a LoRA recalls only ~69% (lossy,
+  confabulates — it collapsed four facts onto one token) vs RAG's 100%. Baking facts
+  into the adapter even *degrades* RAG (100% → 69%). **Facts → retrieval, skills →
+  adapters.**
 - **Naive LoRA+RAG interferes** — a memorize-only adapter makes the model ignore
   retrieved context. The fix (context-preserving adapter training) is built in.
 - **Skills pay off only for behaviors the base does *unreliably*.** A skill-LoRA
