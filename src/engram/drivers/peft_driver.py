@@ -165,22 +165,27 @@ class PEFTDriver(BaseLLMDriver):
         config: {lora_id, steps, lr, r, alpha}. Returns the saved adapter id."""
         from peft import LoraConfig, get_peft_model
         lora_id = config.get("lora_id", f"skill_{int(time.time())}")
-        # leaf-name targets match language Linears before AND after PEFT wrapping (suffix match)
-        leaves = sorted({n.split(".")[-1] for n, m in self.model.named_modules()
-                         if isinstance(m, torch.nn.Linear) and ".language_model." in n
-                         and "lora" not in n.lower()})
-        lcfg = LoraConfig(target_modules=leaves, r=config.get("r", 16),
-                          lora_alpha=config.get("alpha", 32), lora_dropout=0.05,
-                          bias="none", task_type="CAUSAL_LM")
+        r, alpha = config.get("r", 16), config.get("alpha", 32)
         if not self._is_peft:
+            # leaf names of the language Linears, computed on the UNWRAPPED base
+            targets = sorted({n.split(".")[-1] for n, m in self.model.named_modules()
+                              if isinstance(m, torch.nn.Linear) and ".language_model." in n
+                              and "lora" not in n.lower()})
+            lcfg = LoraConfig(target_modules=targets, r=r, lora_alpha=alpha,
+                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
             self.model = get_peft_model(self.model, lcfg, adapter_name=lora_id)
             self._is_peft = True
         elif lora_id not in self.model.peft_config:
+            # REUSE the first adapter's targets. Recomputing on the WRAPPED model yields
+            # 'base_layer' (the Linear is now a submodule of lora.Linear), so add_adapter
+            # would target the wrong modules and create an empty adapter -- the multi-skill bug.
+            base_targets = list(next(iter(self.model.peft_config.values())).target_modules)
+            lcfg = LoraConfig(target_modules=base_targets, r=r, lora_alpha=alpha,
+                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
             self.model.add_adapter(lora_id, lcfg)
-        self.model.set_adapter(lora_id)   # only the active adapter trains
-        # NOTE: training a *second* named adapter on an already-PEFT model currently
-        # yields an empty trainable-param set (open bug); consolidate one skill per
-        # driver until fixed. See experiments/ for the workaround.
+        self.model.set_adapter(lora_id)
+        for n, p in self.model.named_parameters():   # train ONLY the active adapter's params
+            p.requires_grad = lora_id in n.split(".")
 
         def to_pair(ex):
             msgs = ex["messages"]
