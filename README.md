@@ -53,6 +53,10 @@ model. The non-obvious findings baked into the architecture:
   saw them). **Facts → retrieval, skills → adapters.**
 - **Naive LoRA+RAG interferes** — a memorize-only adapter makes the model ignore
   retrieved context. The fix (context-preserving adapter training) is built in.
+- **Skills pay off only for behaviors the base does *unreliably*.** A skill-LoRA
+  raised canonical source-attribution from **0% → 92%** over prompted Base+RAG —
+  but added nothing where prompting already works (format, abstention) and cost a
+  little answer accuracy (100% → 92%). Honest, narrow win; see the paper §7.2.
 - **Route with frozen features, not a trained classifier** — trained routers
   overfit and don't generalize to adapters added later.
 
