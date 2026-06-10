@@ -110,11 +110,11 @@ def _source(line):
     return m.group(1).strip() if m else ""
 
 
-def evaluate(driver, retr, lora=None):
+def evaluate(driver, retr, lora=None, use_rag=True):
     fmt_ok = ans_ok = src_ok = abst_ok = 0
     samples = []
     for ent, stmt, q, a in KB:                       # answerable
-        ctx = "\n".join(h.doc for h in retr.retrieve(q, k=2))
+        ctx = "\n".join(h.doc for h in retr.retrieve(q, k=2)) if use_rag else ""
         out = generate(driver, q, ctx, lora)
         line = out.splitlines()[0] if out else ""
         if TEMPLATE.match(line):
@@ -126,7 +126,7 @@ def evaluate(driver, retr, lora=None):
         if len(samples) < 2:
             samples.append((q, out))
     for q in UNANSWERABLE:                           # unanswerable -> should abstain
-        ctx = "\n".join(h.doc for h in retr.retrieve(q, k=2))
+        ctx = "\n".join(h.doc for h in retr.retrieve(q, k=2)) if use_rag else ""
         out = generate(driver, q, ctx, lora)
         line = out.splitlines()[0] if out else ""
         if TEMPLATE.match(line):
@@ -153,23 +153,25 @@ def main():
     d.train_lora(build_training(), {"lora_id": "grounded_skill", "steps": 300})
 
     print("\n=== Base + RAG (instructed) ===", flush=True)
-    base = evaluate(d, retr, lora=None)
+    base = evaluate(d, retr, lora=None, use_rag=True)
     print({k: v for k, v in base.items() if k != "samples"}, flush=True)
-    for q, o in base["samples"]:
+
+    print("\n=== Base + LoRA (no RAG) ===", flush=True)
+    loraonly = evaluate(d, retr, lora="grounded_skill", use_rag=False)
+    print({k: v for k, v in loraonly.items() if k != "samples"}, flush=True)
+    for q, o in loraonly["samples"]:
         print(f"   Q: {q}\n   -> {o!r}", flush=True)
 
     print("\n=== Base + LoRA + RAG ===", flush=True)
-    lora = evaluate(d, retr, lora="grounded_skill")
+    lora = evaluate(d, retr, lora="grounded_skill", use_rag=True)
     print({k: v for k, v in lora.items() if k != "samples"}, flush=True)
-    for q, o in lora["samples"]:
-        print(f"   Q: {q}\n   -> {o!r}", flush=True)
 
     print("\n=== RESULT TABLE ===", flush=True)
     print(f"{'config':<22}{'format%':>9}{'answer%':>9}{'source%':>9}{'abstain%':>10}", flush=True)
-    print(f"{'Base + RAG':<22}{base['format_%']:>9}{base['answer_%']:>9}{base['source_%']:>9}"
-          f"{base['abstain_%']:>10}", flush=True)
-    print(f"{'Base + LoRA + RAG':<22}{lora['format_%']:>9}{lora['answer_%']:>9}{lora['source_%']:>9}"
-          f"{lora['abstain_%']:>10}", flush=True)
+    for name, r in [("Base + RAG", base), ("Base + LoRA (no RAG)", loraonly),
+                    ("Base + LoRA + RAG", lora)]:
+        print(f"{name:<22}{r['format_%']:>9}{r['answer_%']:>9}{r['source_%']:>9}"
+              f"{r['abstain_%']:>10}", flush=True)
 
 
 if __name__ == "__main__":
