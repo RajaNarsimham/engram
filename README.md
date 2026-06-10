@@ -56,7 +56,8 @@ model. The non-obvious findings baked into the architecture:
 - **Route with frozen features, not a trained classifier** — trained routers
   overfit and don't generalize to adapters added later.
 
-See [`docs/`](docs/) for the experiments and the full requirements.
+See the **[paper](docs/PAPER.md)** for the full design, principles, and validation,
+and [`docs/`](docs/) for the experiments and requirements.
 
 ## Architecture
 
