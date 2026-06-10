@@ -178,6 +178,9 @@ class PEFTDriver(BaseLLMDriver):
         elif lora_id not in self.model.peft_config:
             self.model.add_adapter(lora_id, lcfg)
         self.model.set_adapter(lora_id)   # only the active adapter trains
+        # NOTE: training a *second* named adapter on an already-PEFT model currently
+        # yields an empty trainable-param set (open bug); consolidate one skill per
+        # driver until fixed. See experiments/ for the workaround.
 
         def to_pair(ex):
             msgs = ex["messages"]

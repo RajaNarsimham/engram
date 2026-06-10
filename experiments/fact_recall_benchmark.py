@@ -41,6 +41,23 @@ FACTS = [
 ]
 
 
+_SYL = "zen vor qui max bri tho lex nar plu gor fim wex jad kor lun tyr".split()
+
+
+def ctx_preserve(rng, k=16):
+    """Generic 'answer from the provided context' examples — the P3 / Engram fix."""
+    ex = []
+    for _ in range(k):
+        e = "".join(rng.choice(_SYL) for _ in range(2)).capitalize()
+        v = "".join(rng.choice(_SYL) for _ in range(2)).capitalize()
+        ex.append({"messages": [
+            {"role": "system", "content": SYS},
+            {"role": "user",
+             "content": f"Context:\nThe {e} value is {v}.\n\nQuestion: What is the {e} value?"},
+            {"role": "assistant", "content": v}]})
+    return ex
+
+
 def gen(driver, q, context, lora):
     user = q if context is None else f"Context:\n{context}\n\nQuestion: {q}"
     req = GenRequest(messages=[{"role": "system", "content": SYS},
@@ -66,23 +83,43 @@ def main():
     d = PEFTDriver(MODEL, adapter_dir="C:/Users/home/engram/engram_store/adapters")
     retr = Retriever(device="cuda:0", min_score=0.3).build([f[2] for f in FACTS])
 
-    print("training LoRA ON the facts (memorization, r=32, 500 steps)...", flush=True)
-    train = [{"messages": [{"role": "system", "content": SYS},
-                           {"role": "user", "content": q},
-                           {"role": "assistant", "content": a}]} for q, a, _ in FACTS]
-    d.train_lora(train, {"lora_id": "facts", "steps": 500, "r": 32, "alpha": 64})
+    import gc
+    import random
 
-    base = score(d, retr, lora=None, use_rag=False)
-    print("\n--- Base + LoRA (no RAG) raw outputs ---", flush=True)
-    loraonly = score(d, retr, lora="facts", use_rag=False, verbose=True)
-    rag = score(d, retr, lora=None, use_rag=True)
-    both = score(d, retr, lora="facts", use_rag=True)
+    import torch
+    mem = [{"messages": [{"role": "system", "content": SYS},
+                         {"role": "user", "content": q},
+                         {"role": "assistant", "content": a}]} for q, a, _ in FACTS]
+    cp = ctx_preserve(random.Random(0), k=16)
 
-    print("\n=== FACT RECALL (16 fabricated facts the LoRA was TRAINED on) ===", flush=True)
-    print(f"{'config':<24}{'recall%':>9}", flush=True)
-    for name, v in [("Base", base), ("Base + LoRA (no RAG)", loraonly),
-                    ("Base + RAG", rag), ("Base + LoRA + RAG", both)]:
-        print(f"{name:<24}{v:>9}", flush=True)
+    base = score(d, retr, None, False)
+    rag = score(d, retr, None, True)
+    print("training mem-only LoRA...", flush=True)
+    d.train_lora(mem, {"lora_id": "facts", "steps": 500, "r": 32, "alpha": 64})
+    mem_norag = score(d, retr, "facts", False)
+    mem_rag = score(d, retr, "facts", True)
+
+    del d                                            # free VRAM; fresh model for adapter #2
+    gc.collect(); torch.cuda.empty_cache()
+    print("loading fresh model for context-preserving LoRA...", flush=True)
+    d2 = PEFTDriver(MODEL, adapter_dir="C:/Users/home/engram/engram_store/adapters")
+    print("training context-preserving LoRA...", flush=True)
+    d2.train_lora(mem + cp, {"lora_id": "facts_cp", "steps": 600, "r": 32, "alpha": 64})
+    cp_norag = score(d2, retr, "facts_cp", False)
+    cp_rag = score(d2, retr, "facts_cp", True)
+
+    rows = [
+        ("Base", base),
+        ("Base + RAG", rag),
+        ("Base + LoRA (mem), no RAG", mem_norag),
+        ("Base + LoRA (mem) + RAG", mem_rag),
+        ("Base + LoRA (ctx-preserving), no RAG", cp_norag),
+        ("Base + LoRA (ctx-preserving) + RAG", cp_rag),
+    ]
+    print("\n=== FACT RECALL (16 facts the LoRA was trained on) ===", flush=True)
+    print(f"{'config':<38}{'recall%':>9}", flush=True)
+    for name, v in rows:
+        print(f"{name:<38}{v:>9}", flush=True)
 
 
 if __name__ == "__main__":

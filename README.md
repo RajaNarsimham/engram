@@ -50,10 +50,10 @@ model. The non-obvious findings baked into the architecture:
   checks for it.
 - **RAG beats fine-tuning for facts — even facts the LoRA *was* trained on.** On a
   real 4B model, retrieval answered fresh facts at ~88% (a fine-tuned model: 0% — it
-  never saw them); and even for *trained* facts a LoRA recalls only ~69% (lossy,
-  confabulates — it collapsed four facts onto one token) vs RAG's 100%. Baking facts
-  into the adapter even *degrades* RAG (100% → 69%). **Facts → retrieval, skills →
-  adapters.**
+  never saw them); and even for *trained* facts a LoRA recalls only ~69–88% (noisy,
+  lossy, confabulates) vs RAG's stable 100%, and **every** LoRA+RAG config stays
+  *below* RAG — baking facts in costs accuracy (and context-preserving training did
+  not cleanly fix it at this scale). **Facts → retrieval, skills → adapters.**
 - **Naive LoRA+RAG interferes** — a memorize-only adapter makes the model ignore
   retrieved context. The fix (context-preserving adapter training) is built in.
 - **Skills pay off only for behaviors the base does *unreliably*.** A skill-LoRA
