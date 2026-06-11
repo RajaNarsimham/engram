@@ -29,6 +29,7 @@ _SYL = "zen vor qui max bri tho lex nar plu gor fim wex jad kor lun tyr".split()
 class ConsolidationEngine:
     def __init__(self, driver: BaseLLMDriver, registry: Registry, embed_fn: Callable,
                  gate: EvalGate, steps: int = 300, canary: bool = False, canary_pct: float = 0.1,
+                 ladder: list | None = None, escalate_threshold: float = 0.9,
                  trigger: str = "manual", threshold: int = 4, interval: float = 0.0,
                  lock=None, on_process: Callable | None = None):
         self.driver = driver
@@ -38,6 +39,12 @@ class ConsolidationEngine:
         self.steps = steps
         self.canary = canary               # new skills enter as canary (vs straight to live)
         self.canary_pct = canary_pct
+        # eval-driven config SELECTION: try these, KEEP THE BEST by eval (the sweep showed
+        # more capacity can backfire, so we select rather than blindly escalate). DoRA/rsLoRA
+        # are available per-rung but config-sensitive, so the default ladder stays modest.
+        self.ladder = ladder or [{"r": 16, "alpha": 32, "steps": steps},
+                                 {"r": 32, "alpha": 64, "steps": steps + 100}]
+        self.escalate_threshold = escalate_threshold   # stop escalating once a rung clears this
         self.jobs: list[dict] = []
         self.rng = random.Random(0)
         # async policy: manual | threshold | scheduled
@@ -123,21 +130,37 @@ class ConsolidationEngine:
         qa = self._gen_qa(text)
         if not qa:
             return {"id": jid, "status": "no_qa_generated", "promoted": False}
+        # DUAL FORMAT (signal > capacity, per the escalation sweep): QA recall view +
+        # a declarative fact view, so it overfits to the FACT, not the question string.
         train = [{"messages": [{"role": "user", "content": q},
                                {"role": "assistant", "content": a if a.endswith(".") else a + "."}]}
                  for q, a in qa]
+        train.append({"messages": [{"role": "user", "content": "State what you know on this topic."},
+                                   {"role": "assistant", "content": text[:1500]}]})
         train += self._ctx_preserve()
-        lid = self.driver.train_lora(train, {"lora_id": jid, "steps": self.steps})
-        score = self.gate.score(lid, qa)
+
+        # eval-driven config SELECTION: train each rung, KEEP THE BEST by eval, stop early
+        # once a rung clears escalate_threshold; the eval-gate rejects broken configs.
+        best = None                                    # (lid, score, rung)
+        for i, rung in enumerate(self.ladder):
+            lid = jid if i == 0 else f"{jid}__r{rung.get('r', 16)}"
+            self.driver.train_lora(train, {"lora_id": lid, **rung})
+            score = self.gate.score(lid, qa)
+            if best is None or score > best[1]:
+                best = (lid, score, rung)
+            if score >= self.escalate_threshold:
+                break
+        lid, score, rung = best
         promoted = self.gate.passes(score)
-        if promoted:
+        if promoted:                                    # else: not registered -> stays in RAG
             self.registry.register(Capability(
                 name=jid, kind=CapabilityKind.SKILL, description=text[:120],
                 handle=lid, routing_key=self.embed_fn([text])[0],
                 when_to_use=text[:200], eval_passed=True,
                 status="canary" if self.canary else "live", canary_pct=self.canary_pct,
                 base_fp=self.driver.fingerprint(), source=text[:8000],
-                project=project))
-        return {"id": jid, "eval": round(score, 3), "promoted": promoted,
-                "status": "canary" if (promoted and self.canary) else ("live" if promoted else "rejected"),
+                metadata={"rung": rung, "eval": round(score, 3)}, project=project))
+        return {"id": jid, "eval": round(score, 3), "promoted": promoted, "rung": rung,
+                "status": ("canary" if (promoted and self.canary)
+                           else "live" if promoted else "below_threshold_kept_in_rag"),
                 "n_qa": len(qa), "n_train": len(train)}

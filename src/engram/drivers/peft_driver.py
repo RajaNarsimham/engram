@@ -166,13 +166,15 @@ class PEFTDriver(BaseLLMDriver):
         from peft import LoraConfig, get_peft_model
         lora_id = config.get("lora_id", f"skill_{int(time.time())}")
         r, alpha = config.get("r", 16), config.get("alpha", 32)
+        # capacity escalation knobs: DoRA (weight-decomposed) and rsLoRA (rank-stabilized)
+        extra = dict(use_dora=config.get("dora", False), use_rslora=config.get("rslora", False))
         if not self._is_peft:
             # leaf names of the language Linears, computed on the UNWRAPPED base
             targets = sorted({n.split(".")[-1] for n, m in self.model.named_modules()
                               if isinstance(m, torch.nn.Linear) and ".language_model." in n
                               and "lora" not in n.lower()})
             lcfg = LoraConfig(target_modules=targets, r=r, lora_alpha=alpha,
-                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
+                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM", **extra)
             self.model = get_peft_model(self.model, lcfg, adapter_name=lora_id)
             self._is_peft = True
         elif lora_id not in self.model.peft_config:
@@ -181,7 +183,7 @@ class PEFTDriver(BaseLLMDriver):
             # would target the wrong modules and create an empty adapter -- the multi-skill bug.
             base_targets = list(next(iter(self.model.peft_config.values())).target_modules)
             lcfg = LoraConfig(target_modules=base_targets, r=r, lora_alpha=alpha,
-                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM")
+                              lora_dropout=0.05, bias="none", task_type="CAUSAL_LM", **extra)
             self.model.add_adapter(lora_id, lcfg)
         self.model.set_adapter(lora_id)
         for n, p in self.model.named_parameters():   # train ONLY the active adapter's params
