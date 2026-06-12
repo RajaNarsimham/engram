@@ -88,7 +88,7 @@ def add_head(m, n):
 
 def main():
     tok = AutoTokenizer.from_pretrained(g.NAME)
-    for n in (1, 2):
+    for n in (1, 2, 3, 4):
         m = AutoModelForImageTextToText.from_pretrained(g.NAME, dtype=torch.bfloat16).to(DEV)
         m = add_head(m, n)
         ntr = sum(p.numel() for p in m.parameters() if p.requires_grad)
