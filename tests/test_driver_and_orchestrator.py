@@ -66,6 +66,32 @@ def test_route_below_threshold_returns_none():
     assert o._route("q", "default")[0] is None
 
 
+def test_hierarchical_routing_picks_domain_then_subtopic():
+    import math
+    vec = {"math domain": [1, 0, 0, 0], "code domain": [0, 1, 0, 0],
+           "algebra": [0.9, 0, 0.4, 0], "geometry": [0.9, 0, 0, 0.4], "recursion": [0, 0.9, 0.4, 0],
+           "solve for x": [0.95, 0, 0.3, 0]}
+
+    def emb(texts):
+        out = []
+        for t in texts:
+            v = vec.get(t, [0, 0, 0, 0])
+            n = math.sqrt(sum(x * x for x in v)) or 1.0
+            out.append([x / n for x in v])
+        return out
+
+    def cap(name, domain, key):
+        return Capability(name=name, kind=CapabilityKind.SKILL, description="d", routing_key=emb([key])[0],
+                          eval_passed=True, metadata={"domain": domain, "domain_desc": f"{domain} domain"})
+    reg = Registry()
+    reg.register(cap("math_algebra", "math", "algebra"))
+    reg.register(cap("math_geometry", "math", "geometry"))
+    reg.register(cap("code_recursion", "code", "recursion"))
+    o = Orchestrator(MockDriver(), reg, {}, emb, route_threshold=0.3)
+    name, _ = o._route("solve for x", "default")
+    assert name == "math_algebra"     # domain=math (not code), then subtopic=algebra (not geometry)
+
+
 def test_assemble_injects_context_as_system():
     o = Orchestrator(MockDriver(), Registry(), {}, _emb)
     msgs = o._assemble([{"role": "user", "content": "q"}], [Hit("a key fact", 0.9)])

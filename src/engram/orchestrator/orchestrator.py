@@ -63,6 +63,12 @@ class Orchestrator:
         self.k = k
         self.graphs = graphs if graphs is not None else {}
         self._rng = random.Random()
+        self._domain_keys: dict = {}             # cached domain embeddings for hierarchical routing
+
+    def _domain_key(self, domain: str, desc: str):
+        if domain not in self._domain_keys:
+            self._domain_keys[domain] = self.embed_fn([desc])[0]
+        return self._domain_keys[domain]
 
     def _route(self, query: str, project: str) -> tuple[str | None, float]:
         skills = [c for c in self.registry.list(project=project, kind=CapabilityKind.SKILL,
@@ -70,7 +76,16 @@ class Orchestrator:
         if not skills:
             return None, 0.0
         qv = self.embed_fn([query])[0]
-        scored = sorted(((c, _cos(qv, c.routing_key)) for c in skills),
+        # HIERARCHICAL routing: if skills carry metadata['domain'], pick the DOMAIN first
+        # (coarse, well-separated -> reliable) then the best subtopic within it. This keeps
+        # routing robust at fine granularity. Falls back to flat routing when untagged.
+        dom_desc = {c.metadata["domain"]: c.metadata.get("domain_desc", c.metadata["domain"])
+                    for c in skills if c.metadata.get("domain")}
+        cands = skills
+        if dom_desc:
+            best_domain = max(dom_desc, key=lambda d: _cos(qv, self._domain_key(d, dom_desc[d])))
+            cands = [c for c in skills if c.metadata.get("domain") == best_domain] or skills
+        scored = sorted(((c, _cos(qv, c.routing_key)) for c in cands),
                         key=lambda t: t[1], reverse=True)
         best, score = scored[0]
         if score < self.route_threshold:

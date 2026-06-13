@@ -1,0 +1,872 @@
+{
+ "math": [
+  [
+   "What is the sum of 25 and 37?",
+   "Step 1: Write the numbers vertically for addition.\n   25\n+ 37\n-----\nStep 2: Add the digits in the ones place: 5 + 7 = 12. Write 2 and carry over 1.\nStep 3: Add the digits in the tens place: 2 + 3 = 5, plus the carried over 1 makes 6.\nStep 4: Combine the results: 62.\nFinal answer: 62"
+  ],
+  [
+   "What is the result of 144 divided by 12?",
+   "Step 1: Set up the division: 144 \u00f7 12.\nStep 2: Determine how many times 12 goes into 144.\nStep 3: 12 \u00d7 10 = 120. Subtract from 144: 144 - 120 = 24.\nStep 4: 12 \u00d7 2 = 24. Add to 10: 10 + 2 = 12.\nStep 5: Therefore, 144 \u00f7 12 = 12.\nFinal answer: 12"
+  ],
+  [
+   "What is 8 times 7 minus 15?",
+   "Step 1: Multiply 8 by 7: 8 \u00d7 7 = 56.\nStep 2: Subtract 15 from the result: 56 - 15 = 41.\nFinal answer: 41"
+  ],
+  [
+   "What is 3/4 of 20?",
+   "Step 1: Understand that 'of' means multiplication.\nStep 2: Multiply 3/4 by 20: (3/4) \u00d7 20.\nStep 3: Multiply numerator by 20: 3 \u00d7 20 = 60.\nStep 4: Divide by denominator: 60 \u00f7 4 = 15.\nFinal answer: 15"
+  ],
+  [
+   "Add the fractions 3/8 and 5/12.",
+   "Step 1: Find the least common denominator (LCD) of 8 and 12. The multiples of 8 are 8, 16, 24, 32, ... and the multiples of 12 are 12, 24, 36, ... So, the LCD is 24.\nStep 2: Convert each fraction to an equivalent fraction with denominator 24.\n3/8 = (3 \u00d7 3)/(8 \u00d7 3) = 9/24\n5/12 = (5 \u00d7 2)/(12 \u00d7 2) = 10/24\nStep 3: Add the fractions.\n9/24 + 10/24 = 19/24\nStep 4: Simplify if possible. 19/24 is already in simplest form.\nFinal answer: 19/24"
+  ],
+  [
+   "Multiply 7/9 by 3/4.",
+   "Step 1: Multiply the numerators together and the denominators together.\n(7 \u00d7 3) / (9 \u00d7 4) = 21/36\nStep 2: Simplify the fraction by finding the greatest common divisor (GCD) of 21 and 36. The GCD of 21 and 36 is 3.\nStep 3: Divide both numerator and denominator by 3.\n21 \u00f7 3 = 7\n36 \u00f7 3 = 12\nSo, 21/36 simplifies to 7/12.\nFinal answer: 7/12"
+  ],
+  [
+   "Subtract 5/6 from 7/8.",
+   "Step 1: Find the least common denominator (LCD) of 6 and 8. The multiples of 6 are 6, 12, 18, 24, ... and the multiples of 8 are 8, 16, 24, ... So, the LCD is 24.\nStep 2: Convert both fractions to equivalent fractions with denominator 24.\n7/8 = (7 \u00d7 3)/(8 \u00d7 3) = 21/24\n5/6 = (5 \u00d7 4)/(6 \u00d7 4) = 20/24\nStep 3: Subtract the fractions.\n21/24 - 20/24 = 1/24\nStep 4: Simplify if possible. 1/24 is already in simplest form.\nFinal answer: 1/24"
+  ],
+  [
+   "Divide 4/5 by 2/3.",
+   "Step 1: To divide fractions, multiply the first fraction by the reciprocal of the second.\n4/5 \u00f7 2/3 = 4/5 \u00d7 3/2\nStep 2: Multiply the numerators and denominators.\n(4 \u00d7 3) / (5 \u00d7 2) = 12/10\nStep 3: Simplify the fraction. The GCD of 12 and 10 is 2.\n12 \u00f7 2 = 6\n10 \u00f7 2 = 5\nSo, 12/10 simplifies to 6/5.\nStep 4: Convert to a mixed number if desired: 6/5 = 1 1/5.\nFinal answer: 6/5"
+  ],
+  [
+   "What is 25% of 120?",
+   "To find 25% of 120, convert 25% to a decimal by dividing by 100: 25 \u00f7 100 = 0.25.\nThen multiply 0.25 by 120: 0.25 \u00d7 120 = 30.\nFinal answer: 30"
+  ],
+  [
+   "If a shirt originally costs $40 and is on sale for 15% off, what is the discount amount?",
+   "To find the discount, calculate 15% of $40.\nConvert 15% to a decimal: 15 \u00f7 100 = 0.15.\nMultiply 0.15 by 40: 0.15 \u00d7 40 = 6.\nFinal answer: 6"
+  ],
+  [
+   "A class has 24 students, and 18 of them are girls. What percentage of the class are girls?",
+   "To find the percentage, divide the number of girls by the total number of students: 18 \u00f7 24 = 0.75.\nConvert the decimal to a percentage by multiplying by 100: 0.75 \u00d7 100 = 75%.\nFinal answer: 75%"
+  ],
+  [
+   "A store sold 80 items last week and 100 items this week. By what percentage did sales increase?",
+   "First, find the increase in sales: 100 - 80 = 20.\nThen, divide the increase by the original amount: 20 \u00f7 80 = 0.25.\nConvert to a percentage: 0.25 \u00d7 100 = 25%.\nFinal answer: 25%"
+  ],
+  [
+   "Solve for x: 3x + 5 = 20",
+   "Step 1: Subtract 5 from both sides of the equation.\n3x + 5 - 5 = 20 - 5\n3x = 15\nStep 2: Divide both sides by 3.\n3x / 3 = 15 / 3\nx = 5\nFinal answer: 5"
+  ],
+  [
+   "Simplify the expression: 2(x + 3) - 4x",
+   "Step 1: Distribute the 2 across the terms in parentheses.\n2(x + 3) = 2x + 6\nStep 2: Rewrite the expression.\n2x + 6 - 4x\nStep 3: Combine like terms.\n(2x - 4x) + 6 = -2x + 6\nFinal answer: -2x + 6"
+  ],
+  [
+   "Solve the equation: 2x - 7 = 3x + 2",
+   "Step 1: Subtract 2x from both sides.\n2x - 7 - 2x = 3x + 2 - 2x\n-7 = x + 2\nStep 2: Subtract 2 from both sides.\n-7 - 2 = x + 2 - 2\n-9 = x\nFinal answer: -9"
+  ],
+  [
+   "Find the value of y when x = 4 in the equation: y = 2x\u00b2 - 3x + 1",
+   "Step 1: Substitute x = 4 into the equation.\ny = 2(4)\u00b2 - 3(4) + 1\nStep 2: Calculate the square.\ny = 2(16) - 3(4) + 1\nStep 3: Multiply.\ny = 32 - 12 + 1\nStep 4: Perform the addition and subtraction.\ny = 21\nFinal answer: 21"
+  ],
+  [
+   "Find the area of a triangle with base 12 cm and height 8 cm.",
+   "Step 1: Recall the formula for the area of a triangle: Area = (1/2) \u00d7 base \u00d7 height.\nStep 2: Substitute the given values into the formula: Area = (1/2) \u00d7 12 cm \u00d7 8 cm.\nStep 3: Multiply the numbers: Area = 6 \u00d7 8 = 48.\nStep 4: Include the unit: Area = 48 cm\u00b2.\nFinal answer: 48 cm\u00b2"
+  ],
+  [
+   "A rectangle has a length of 15 m and a width of 9 m. Find its perimeter.",
+   "Step 1: Recall the formula for the perimeter of a rectangle: Perimeter = 2 \u00d7 (length + width).\nStep 2: Substitute the given values: Perimeter = 2 \u00d7 (15 m + 9 m).\nStep 3: Add the length and width: 15 + 9 = 24 m.\nStep 4: Multiply by 2: 2 \u00d7 24 = 48 m.\nFinal answer: 48 m"
+  ],
+  [
+   "What is the volume of a cube with side length 5 cm?",
+   "Step 1: Recall the formula for the volume of a cube: Volume = side\u00b3.\nStep 2: Substitute the given side length: Volume = 5 cm \u00d7 5 cm \u00d7 5 cm.\nStep 3: Multiply: 5 \u00d7 5 = 25, and 25 \u00d7 5 = 125.\nStep 4: Include the unit: Volume = 125 cm\u00b3.\nFinal answer: 125 cm\u00b3"
+  ],
+  [
+   "A circle has a radius of 7 m. Find its circumference. Use \u03c0 \u2248 3.14.",
+   "Step 1: Recall the formula for the circumference of a circle: Circumference = 2\u03c0r.\nStep 2: Substitute the given values: Circumference = 2 \u00d7 3.14 \u00d7 7 m.\nStep 3: Multiply: 2 \u00d7 3.14 = 6.28, then 6.28 \u00d7 7 = 43.96.\nStep 4: Include the unit: Circumference = 43.96 m.\nFinal answer: 43.96 m"
+  ],
+  [
+   "A bakery sold 120 loaves of bread on Monday and 150 loaves on Tuesday. On Wednesday, it sold twice as many loaves as on Monday. How many loaves were sold in total over the three days?",
+   "Step 1: Identify the number of loaves sold each day.\n- Monday: 120 loaves\n- Tuesday: 150 loaves\n- Wednesday: 2 \u00d7 120 = 240 loaves\n\nStep 2: Add the loaves sold over the three days.\n120 + 150 + 240 = 510\n\nFinal answer: 510"
+  ],
+  [
+   "A rectangular garden has a length of 15 meters and a width of 8 meters. What is the area of the garden?",
+   "Step 1: Recall the formula for the area of a rectangle: Area = length \u00d7 width.\nStep 2: Plug in the given values: Area = 15 m \u00d7 8 m.\nStep 3: Multiply: 15 \u00d7 8 = 120.\n\nFinal answer: 120 m\u00b2"
+  ],
+  [
+   "A train travels at a speed of 80 km/h. How far will it travel in 3 hours and 15 minutes?",
+   "Step 1: Convert 3 hours and 15 minutes to hours.\n15 minutes = 15/60 = 0.25 hours.\nTotal time = 3 + 0.25 = 3.25 hours.\n\nStep 2: Use the formula distance = speed \u00d7 time.\nDistance = 80 km/h \u00d7 3.25 h.\n\nStep 3: Multiply: 80 \u00d7 3.25 = 260.\n\nFinal answer: 260 km"
+  ],
+  [
+   "In a class of 30 students, 12 are girls. What percentage of the class are girls?",
+   "Step 1: Write the ratio of girls to total students: 12/30.\nStep 2: Divide 12 by 30 to get the decimal: 12 \u00f7 30 = 0.4.\nStep 3: Convert the decimal to a percentage by multiplying by 100: 0.4 \u00d7 100 = 40%.\n\nFinal answer: 40%"
+  ],
+  [
+   "If 3 apples cost $1.50, how much would 10 apples cost?",
+   "Step 1: Find the cost of one apple by dividing the total cost by the number of apples.\n$1.50 \u00f7 3 = $0.50 per apple.\nStep 2: Multiply the cost of one apple by the number of apples needed.\n$0.50 \u00d7 10 = $5.00.\nFinal answer: $5.00"
+  ],
+  [
+   "A recipe calls for 2 cups of flour and 3 cups of sugar. How many cups of sugar are needed if you use 8 cups of flour?",
+   "Step 1: Write the ratio of flour to sugar as 2:3.\nStep 2: Set up a proportion: 2/3 = 8/x, where x is the amount of sugar needed.\nStep 3: Cross-multiply: 2x = 8 \u00d7 3 \u2192 2x = 24.\nStep 4: Solve for x: x = 24 \u00f7 2 = 12.\nFinal answer: 12"
+  ],
+  [
+   "The ratio of boys to girls in a class is 4:5. If there are 20 boys, how many girls are in the class?",
+   "Step 1: Set up the ratio: 4 parts boys to 5 parts girls.\nStep 2: If 4 parts = 20 boys, then one part = 20 \u00f7 4 = 5.\nStep 3: Multiply the number of parts for girls by the value of one part: 5 \u00d7 5 = 25.\nFinal answer: 25"
+  ],
+  [
+   "A map has a scale of 1 cm : 10 km. If two towns are 6.5 cm apart on the map, what is the actual distance between them?",
+   "Step 1: Understand the scale: 1 cm represents 10 km.\nStep 2: Multiply the map distance by the scale factor: 6.5 cm \u00d7 10 km/cm = 65 km.\nFinal answer: 65 km"
+  ],
+  [
+   "A fair six-sided die is rolled. What is the probability of rolling an even number?",
+   "Step 1: Identify the total number of possible outcomes when rolling a fair six-sided die. The outcomes are {1, 2, 3, 4, 5, 6}, so there are 6 possible outcomes.\nStep 2: Identify the favorable outcomes, which are the even numbers. The even numbers in the set are {2, 4, 6}, so there are 3 favorable outcomes.\nStep 3: Use the probability formula: P(event) = (Number of favorable outcomes) / (Total number of possible outcomes).\nSo, P(even) = 3/6 = 1/2.\nFinal answer: 1/2"
+  ],
+  [
+   "A bag contains 5 red marbles, 3 blue marbles, and 2 green marbles. If one marble is drawn at random, what is the probability that it is not blue?",
+   "Step 1: Determine the total number of marbles in the bag. 5 red + 3 blue + 2 green = 10 marbles.\nStep 2: Find the number of marbles that are not blue. That would be 5 red + 2 green = 7 marbles.\nStep 3: Use the probability formula: P(not blue) = (Number of non-blue marbles) / (Total marbles) = 7/10.\nFinal answer: 7/10"
+  ],
+  [
+   "Two fair coins are tossed. What is the probability that both land on heads?",
+   "Step 1: List all possible outcomes when two coins are tossed. The outcomes are: HH, HT, TH, TT. There are 4 possible outcomes.\nStep 2: Identify the favorable outcome: both coins showing heads, which is HH. There is 1 such outcome.\nStep 3: Use the probability formula: P(both heads) = 1/4.\nFinal answer: 1/4"
+  ],
+  [
+   "In a class of 30 students, 18 are boys and 12 are girls. If a student is chosen at random, what is the probability that the student is a boy or has brown hair, given that 10 boys and 4 girls have brown hair?",
+   "Step 1: Find the total number of students: 30.\nStep 2: Find the number of students who are boys: 18.\nStep 3: Find the number of students who have brown hair: 10 boys + 4 girls = 14.\nStep 4: Use the inclusion-exclusion principle: P(boy or brown hair) = P(boy) + P(brown hair) - P(boy and brown hair).\nStep 5: P(boy) = 18/30, P(brown hair) = 14/30, P(boy and brown hair) = 10/30.\nStep 6: Calculate: 18/30 + 14/30 - 10/30 = 22/30 = 11/15.\nFinal answer: 11/15"
+  ],
+  [
+   "What is the sum of 24 and 17?",
+   "Step 1: Add the ones place: 4 + 7 = 11. Write down 1 and carry over 1.\nStep 2: Add the tens place: 2 + 1 = 3, plus the carried over 1 makes 4.\nStep 3: Combine the results: 41.\nFinal answer: 41"
+  ],
+  [
+   "What is 8 times 6?",
+   "Step 1: Multiply 8 by 6.\nStep 2: Recall the multiplication fact: 8 \u00d7 6 = 48.\nFinal answer: 48"
+  ],
+  [
+   "Subtract 39 from 85.",
+   "Step 1: Subtract the ones place: 5 - 9. Since 5 is less than 9, borrow 1 from the tens place.\nStep 2: 15 - 9 = 6.\nStep 3: Subtract the tens place: 7 - 3 = 4 (since we borrowed 1, 8 becomes 7).\nStep 4: Combine: 46.\nFinal answer: 46"
+  ],
+  [
+   "Divide 72 by 8.",
+   "Step 1: Determine how many times 8 goes into 72.\nStep 2: Recall that 8 \u00d7 9 = 72.\nStep 3: Therefore, 72 \u00f7 8 = 9.\nFinal answer: 9"
+  ],
+  [
+   "Add the fractions 3/8 and 5/12.",
+   "Step 1: Find the least common denominator (LCD) of 8 and 12. The multiples of 8 are 8, 16, 24, 32, ... and of 12 are 12, 24, 36, ... So, the LCD is 24.\nStep 2: Convert each fraction to have the denominator of 24.\n3/8 = (3 \u00d7 3) / (8 \u00d7 3) = 9/24\n5/12 = (5 \u00d7 2) / (12 \u00d7 2) = 10/24\nStep 3: Add the numerators: 9/24 + 10/24 = 19/24\nStep 4: The fraction 19/24 is already in simplest form.\nFinal answer: 19/24"
+  ],
+  [
+   "Subtract 7/9 from 5/6.",
+   "Step 1: Find the least common denominator (LCD) of 6 and 9. The multiples of 6 are 6, 12, 18, ... and of 9 are 9, 18, 27, ... So, the LCD is 18.\nStep 2: Convert each fraction to have the denominator of 18.\n5/6 = (5 \u00d7 3) / (6 \u00d7 3) = 15/18\n7/9 = (7 \u00d7 2) / (9 \u00d7 2) = 14/18\nStep 3: Subtract the numerators: 15/18 - 14/18 = 1/18\nStep 4: The fraction 1/18 is already in simplest form.\nFinal answer: 1/18"
+  ],
+  [
+   "Multiply 2/5 by 3/4.",
+   "Step 1: Multiply the numerators together: 2 \u00d7 3 = 6\nStep 2: Multiply the denominators together: 5 \u00d7 4 = 20\nStep 3: Write the product as a fraction: 6/20\nStep 4: Simplify the fraction by dividing numerator and denominator by their GCD, which is 2: 6 \u00f7 2 = 3, 20 \u00f7 2 = 10\nStep 5: The simplified fraction is 3/10.\nFinal answer: 3/10"
+  ],
+  [
+   "Divide 3/4 by 2/5.",
+   "Step 1: To divide fractions, multiply the first fraction by the reciprocal of the second.\nReciprocal of 2/5 is 5/2.\nStep 2: Multiply 3/4 by 5/2: (3 \u00d7 5) / (4 \u00d7 2) = 15/8\nStep 3: Convert the improper fraction to a mixed number: 15 \u00f7 8 = 1 with a remainder of 7, so it's 1 7/8.\nFinal answer: 1 7/8"
+  ],
+  [
+   "What is 25% of 80?",
+   "To find 25% of 80, convert 25% to a decimal: 25 \u00f7 100 = 0.25.\nThen multiply 0.25 by 80: 0.25 \u00d7 80 = 20.\nFinal answer: 20"
+  ],
+  [
+   "If a shirt originally costs $60 and is on sale for 15% off, what is the sale price?",
+   "First, find 15% of $60: 15 \u00f7 100 = 0.15.\nThen multiply 0.15 by 60: 0.15 \u00d7 60 = 9.\nThis is the discount amount.\nSubtract the discount from the original price: 60 - 9 = 51.\nFinal answer: 51"
+  ],
+  [
+   "A class has 30 students, and 18 of them are girls. What percentage of the class are girls?",
+   "To find the percentage, divide the number of girls by the total number of students: 18 \u00f7 30 = 0.6.\nThen multiply by 100 to convert to a percentage: 0.6 \u00d7 100 = 60.\nFinal answer: 60"
+  ],
+  [
+   "After a 10% increase, the price of a book is $22. What was the original price?",
+   "Let the original price be x.\nA 10% increase means the new price is x + 0.10x = 1.10x.\nWe know the new price is $22, so 1.10x = 22.\nTo find x, divide both sides by 1.10: x = 22 \u00f7 1.10 = 20.\nFinal answer: 20"
+  ],
+  [
+   "Solve for x: 3x + 5 = 20",
+   "Step 1: Subtract 5 from both sides of the equation.\n3x + 5 - 5 = 20 - 5\n3x = 15\nStep 2: Divide both sides by 3.\n3x / 3 = 15 / 3\nx = 5\nFinal answer: 5"
+  ],
+  [
+   "Simplify the expression: (2x + 3) + (4x - 7)",
+   "Step 1: Remove the parentheses.\n2x + 3 + 4x - 7\nStep 2: Combine like terms.\n(2x + 4x) + (3 - 7)\n6x - 4\nFinal answer: 6x - 4"
+  ],
+  [
+   "Solve the system of equations:\n  x + y = 7\n  2x - y = 5",
+   "Step 1: Add the two equations to eliminate y.\n(x + y) + (2x - y) = 7 + 5\n3x = 12\nStep 2: Solve for x.\n3x / 3 = 12 / 3\nx = 4\nStep 3: Substitute x = 4 into the first equation.\n4 + y = 7\ny = 7 - 4\ny = 3\nFinal answer: x = 4, y = 3"
+  ],
+  [
+   "Factor the quadratic expression: x\u00b2 - 5x + 6",
+   "Step 1: Look for two numbers that multiply to 6 (the constant term) and add to -5 (the coefficient of x).\n-2 and -3 satisfy this because (-2) \u00d7 (-3) = 6 and (-2) + (-3) = -5.\nStep 2: Write the expression as a product of two binomials.\n(x - 2)(x - 3)\nFinal answer: (x - 2)(x - 3)"
+  ],
+  [
+   "Find the area of a triangle with base 12 cm and height 8 cm.",
+   "Step 1: Recall the formula for the area of a triangle: Area = (1/2) \u00d7 base \u00d7 height.\nStep 2: Substitute the given values: Area = (1/2) \u00d7 12 \u00d7 8.\nStep 3: Multiply: (1/2) \u00d7 12 = 6, then 6 \u00d7 8 = 48.\nFinal answer: 48 cm\u00b2"
+  ],
+  [
+   "Find the length of the hypotenuse of a right triangle with legs of lengths 6 cm and 8 cm.",
+   "Step 1: Use the Pythagorean theorem: a\u00b2 + b\u00b2 = c\u00b2, where a and b are the legs and c is the hypotenuse.\nStep 2: Substitute the values: 6\u00b2 + 8\u00b2 = c\u00b2 \u2192 36 + 64 = c\u00b2 \u2192 100 = c\u00b2.\nStep 3: Take the square root of both sides: c = \u221a100 = 10.\nFinal answer: 10 cm"
+  ],
+  [
+   "Find the volume of a cylinder with radius 5 cm and height 10 cm.",
+   "Step 1: Recall the formula for the volume of a cylinder: V = \u03c0r\u00b2h.\nStep 2: Substitute the values: V = \u03c0 \u00d7 5\u00b2 \u00d7 10.\nStep 3: Calculate: 5\u00b2 = 25, then 25 \u00d7 10 = 250.\nStep 4: So, V = 250\u03c0.\nFinal answer: 250\u03c0 cm\u00b3"
+  ],
+  [
+   "A rectangle has a length of 15 m and a width of 9 m. Find its perimeter.",
+   "Step 1: Recall the formula for the perimeter of a rectangle: P = 2(length + width).\nStep 2: Substitute the values: P = 2(15 + 9).\nStep 3: Add inside the parentheses: 15 + 9 = 24.\nStep 4: Multiply: 2 \u00d7 24 = 48.\nFinal answer: 48 m"
+  ],
+  [
+   "A train travels 300 miles in 5 hours. How many miles does it travel in 8 hours at the same speed?",
+   "Step 1: Find the speed of the train.\nSpeed = Distance \u00f7 Time = 300 miles \u00f7 5 hours = 60 miles per hour.\nStep 2: Use the speed to find the distance for 8 hours.\nDistance = Speed \u00d7 Time = 60 miles/hour \u00d7 8 hours = 480 miles.\nFinal answer: 480"
+  ],
+  [
+   "A bakery sells 120 loaves of bread in 4 days. If it sells the same number of loaves each day, how many loaves will it sell in 7 days?",
+   "Step 1: Find the number of loaves sold per day.\nLoaves per day = 120 loaves \u00f7 4 days = 30 loaves per day.\nStep 2: Multiply the daily rate by the number of days.\nTotal loaves = 30 loaves/day \u00d7 7 days = 210 loaves.\nFinal answer: 210"
+  ],
+  [
+   "A rectangular garden has a length of 15 meters and a width of 8 meters. What is the area of the garden?",
+   "Step 1: Recall the formula for the area of a rectangle.\nArea = Length \u00d7 Width.\nStep 2: Plug in the values.\nArea = 15 meters \u00d7 8 meters = 120 square meters.\nFinal answer: 120"
+  ],
+  [
+   "A farmer has 36 apples and wants to pack them equally into 6 baskets. How many apples will be in each basket?",
+   "Step 1: Divide the total number of apples by the number of baskets.\nApples per basket = 36 \u00f7 6.\nStep 2: Perform the division.\n36 \u00f7 6 = 6.\nFinal answer: 6"
+  ],
+  [
+   "If 3 apples cost $1.50, how much would 10 apples cost?",
+   "Step 1: Find the cost of one apple by dividing the total cost by the number of apples.\n$1.50 \u00f7 3 = $0.50\nStep 2: Multiply the cost of one apple by 10 to find the cost of 10 apples.\n$0.50 \u00d7 10 = $5.00\nFinal answer: $5.00"
+  ],
+  [
+   "A recipe calls for 2 cups of flour for every 3 cups of sugar. How many cups of flour are needed if you use 9 cups of sugar?",
+   "Step 1: Set up the ratio of flour to sugar: 2:3\nStep 2: Let x be the number of cups of flour needed for 9 cups of sugar.\nSo, 2/3 = x/9\nStep 3: Cross-multiply: 2 \u00d7 9 = 3 \u00d7 x \u2192 18 = 3x\nStep 4: Solve for x: x = 18 \u00f7 3 = 6\nFinal answer: 6"
+  ],
+  [
+   "The ratio of boys to girls in a class is 4:5. If there are 20 girls, how many boys are there?",
+   "Step 1: The ratio of boys to girls is 4:5, meaning for every 4 boys, there are 5 girls.\nStep 2: Let the number of boys be x.\nSo, x/20 = 4/5\nStep 3: Cross-multiply: 5x = 4 \u00d7 20 \u2192 5x = 80\nStep 4: Solve for x: x = 80 \u00f7 5 = 16\nFinal answer: 16"
+  ],
+  [
+   "A map scale shows that 1 inch represents 10 miles. How many inches on the map represent 75 miles?",
+   "Step 1: Set up the ratio of map distance to real distance: 1 inch : 10 miles\nStep 2: Let x be the number of inches that represent 75 miles.\nSo, 1/10 = x/75\nStep 3: Cross-multiply: 1 \u00d7 75 = 10 \u00d7 x \u2192 75 = 10x\nStep 4: Solve for x: x = 75 \u00f7 10 = 7.5\nFinal answer: 7.5"
+  ],
+  [
+   "A fair six-sided die is rolled. What is the probability of rolling an even number?",
+   "Step 1: Identify the total number of possible outcomes when rolling a fair six-sided die. The outcomes are 1, 2, 3, 4, 5, and 6. So, there are 6 possible outcomes.\nStep 2: Identify the favorable outcomes, which are the even numbers. The even numbers between 1 and 6 are 2, 4, and 6. So, there are 3 favorable outcomes.\nStep 3: Use the probability formula: Probability = (Number of favorable outcomes) / (Total number of outcomes).\nStep 4: Calculate the probability: 3/6 = 1/2.\nFinal answer: 1/2"
+  ],
+  [
+   "A bag contains 4 red marbles and 6 blue marbles. If two marbles are drawn at random without replacement, what is the probability that both marbles are red?",
+   "Step 1: Determine the total number of marbles: 4 red + 6 blue = 10 marbles.\nStep 2: Calculate the probability that the first marble drawn is red: 4/10.\nStep 3: After one red marble is drawn, there are 3 red marbles left and 9 marbles in total.\nStep 4: Calculate the probability that the second marble is also red: 3/9.\nStep 5: Multiply the probabilities: (4/10) \u00d7 (3/9) = 12/90 = 2/15.\nFinal answer: 2/15"
+  ],
+  [
+   "A standard deck of 52 playing cards is shuffled. What is the probability of drawing a king or a queen from the deck?",
+   "Step 1: Identify the total number of possible outcomes: 52 cards.\nStep 2: Count the number of favorable outcomes. There are 4 kings and 4 queens in a deck, so 4 + 4 = 8 favorable cards.\nStep 3: Use the probability formula: Probability = (Number of favorable outcomes) / (Total number of outcomes).\nStep 4: Calculate: 8/52 = 2/13.\nFinal answer: 2/13"
+  ],
+  [
+   "A coin is flipped 3 times. What is the probability of getting exactly 2 heads?",
+   "Step 1: Identify the total number of possible outcomes when flipping a coin 3 times. Since each flip has 2 outcomes (H or T), there are 2^3 = 8 possible outcomes.\nStep 2: List the favorable outcomes with exactly 2 heads: HHT, HTH, THH. There are 3 such outcomes.\nStep 3: Use the probability formula: Probability = (Number of favorable outcomes) / (Total number of outcomes).\nStep 4: Calculate: 3/8.\nFinal answer: 3/8"
+  ],
+  [
+   "What is the sum of 23 and 47?",
+   "Step 1: Write down the numbers: 23 and 47.\nStep 2: Add the ones place: 3 + 7 = 10. Write down 0 and carry over 1.\nStep 3: Add the tens place: 2 + 4 = 6, plus the carried over 1 = 7.\nStep 4: Combine the results: 70.\nFinal answer: 70"
+  ],
+  [
+   "What is 15 multiplied by 6?",
+   "Step 1: Write down the numbers: 15 and 6.\nStep 2: Multiply the ones digit of 15 (5) by 6: 5 \u00d7 6 = 30. Write down 0 and carry over 3.\nStep 3: Multiply the tens digit of 15 (1) by 6: 1 \u00d7 6 = 6, plus the carried over 3 = 9.\nStep 4: Combine the results: 90.\nFinal answer: 90"
+  ],
+  [
+   "Subtract 38 from 92.",
+   "Step 1: Write down the numbers: 92 and 38.\nStep 2: Subtract the ones place: 2 - 8. Since 2 is less than 8, borrow 1 from the tens place. 12 - 8 = 4.\nStep 3: Subtract the tens place: 8 - 3 = 5 (after borrowing, 9 becomes 8).\nStep 4: Combine the results: 54.\nFinal answer: 54"
+  ],
+  [
+   "Divide 84 by 7.",
+   "Step 1: Write down the division: 84 \u00f7 7.\nStep 2: See how many times 7 goes into 8. It goes 1 time (7 \u00d7 1 = 7). Write 1 above the 8.\nStep 3: Subtract 7 from 8: 8 - 7 = 1.\nStep 4: Bring down the 4, making it 14.\nStep 5: See how many times 7 goes into 14. It goes 2 times (7 \u00d7 2 = 14).\nStep 6: Write 2 next to the 1, giving 12.\nStep 7: Subtract 14 from 14: 0.\nFinal answer: 12"
+  ],
+  [
+   "Simplify the fraction 18/24.",
+   "Step 1: Find the greatest common divisor (GCD) of 18 and 24.\n18 = 2 \u00d7 3 \u00d7 3\n24 = 2 \u00d7 2 \u00d7 2 \u00d7 3\nThe GCD is 2 \u00d7 3 = 6.\nStep 2: Divide both the numerator and denominator by the GCD.\n18 \u00f7 6 = 3\n24 \u00f7 6 = 4\nSo, 18/24 simplifies to 3/4.\nFinal answer: 3/4"
+  ],
+  [
+   "Add the fractions 3/8 and 5/12.",
+   "Step 1: Find the least common denominator (LCD) of 8 and 12.\nPrime factors: 8 = 2\u00b3, 12 = 2\u00b2 \u00d7 3\nLCD = 2\u00b3 \u00d7 3 = 24.\nStep 2: Convert each fraction to an equivalent fraction with denominator 24.\n3/8 = (3 \u00d7 3)/(8 \u00d7 3) = 9/24\n5/12 = (5 \u00d7 2)/(12 \u00d7 2) = 10/24\nStep 3: Add the numerators.\n9/24 + 10/24 = 19/24\nFinal answer: 19/24"
+  ],
+  [
+   "Multiply 2/3 by 9/10.",
+   "Step 1: Multiply the numerators: 2 \u00d7 9 = 18.\nStep 2: Multiply the denominators: 3 \u00d7 10 = 30.\nStep 3: Write the product as 18/30.\nStep 4: Simplify the fraction.\nGCD of 18 and 30 is 6.\n18 \u00f7 6 = 3\n30 \u00f7 6 = 5\nSo, 18/30 simplifies to 3/5.\nFinal answer: 3/5"
+  ],
+  [
+   "Divide 7/9 by 2/3.",
+   "Step 1: Recall that dividing by a fraction is the same as multiplying by its reciprocal.\nSo, 7/9 \u00f7 2/3 = 7/9 \u00d7 3/2.\nStep 2: Multiply the numerators: 7 \u00d7 3 = 21.\nStep 3: Multiply the denominators: 9 \u00d7 2 = 18.\nStep 4: Write the result as 21/18.\nStep 5: Simplify the fraction.\nGCD of 21 and 18 is 3.\n21 \u00f7 3 = 7\n18 \u00f7 3 = 6\nSo, 21/18 simplifies to 7/6.\nFinal answer: 7/6"
+  ]
+ ],
+ "coding": [
+  [
+   "Write a function that takes a string and returns the first character of the string.",
+   "Step 1: Define a function that takes one parameter, a string.\nStep 2: Access the first character of the string using index 0.\nStep 3: Return the first character.\n\nCode:\ndef first_char(s):\n    return s[0]\n\nFinal answer: a"
+  ],
+  [
+   "Write a function that converts a string to uppercase and returns it.",
+   "Step 1: Define a function that takes one parameter, a string.\nStep 2: Use the built-in upper() method to convert the string to uppercase.\nStep 3: Return the uppercase string.\n\nCode:\ndef to_upper(s):\n    return s.upper()\n\nFinal answer: HELLO"
+  ],
+  [
+   "Write a function that checks if a string is a palindrome (reads the same forwards and backwards).",
+   "Step 1: Define a function that takes one parameter, a string.\nStep 2: Reverse the string using slicing (s[::-1]).\nStep 3: Compare the original string with the reversed string.\nStep 4: Return True if they are the same, False otherwise.\n\nCode:\ndef is_palindrome(s):\n    return s == s[::-1]\n\nFinal answer: True"
+  ],
+  [
+   "Write a function that counts the number of vowels in a string.",
+   "Step 1: Define a function that takes one parameter, a string.\nStep 2: Create a set or string of vowels for easy lookup.\nStep 3: Initialize a counter to 0.\nStep 4: Loop through each character in the string.\nStep 5: If the character is a vowel, increment the counter.\nStep 6: Return the count.\n\nCode:\ndef count_vowels(s):\n    vowels = 'aeiouAEIOU'\n    count = 0\n    for char in s:\n        if char in vowels:\n            count += 1\n    return count\n\nFinal answer: 3"
+  ],
+  [
+   "Create a list of the first 5 even numbers starting from 2. Write code to generate this list.",
+   "Step 1: Start by creating an empty list.\nStep 2: Use a loop to generate even numbers starting from 2.\nStep 3: Add each even number to the list.\nStep 4: Stop after adding 5 numbers.\n\nCode:\n```python\neven_numbers = []\nfor i in range(5):\n    even_numbers.append(2 * (i + 1))\nprint(even_numbers)\n```\n\nFinal answer: [2, 4, 6, 8, 10]"
+  ],
+  [
+   "Given a list of integers, find the sum of all the elements in the list.",
+   "Step 1: Initialize a variable to store the sum, starting at 0.\nStep 2: Iterate through each element in the list.\nStep 3: Add each element to the sum variable.\nStep 4: Return the total sum after the loop.\n\nCode:\n```python\nnumbers = [1, 2, 3, 4, 5]\nsum_of_numbers = 0\nfor num in numbers:\n    sum_of_numbers += num\nprint(sum_of_numbers)\n```\n\nFinal answer: 15"
+  ],
+  [
+   "Given a list of strings, create a new list that contains only the strings with more than 3 characters.",
+   "Step 1: Start with a list of strings.\nStep 2: Create an empty list to store the filtered strings.\nStep 3: Loop through each string in the original list.\nStep 4: Check if the length of the string is greater than 3.\nStep 5: If yes, add the string to the new list.\nStep 6: Print the result.\n\nCode:\n```python\nwords = ['a', 'hi', 'hello', 'python', 'hi']\nlong_words = []\nfor word in words:\n    if len(word) > 3:\n        long_words.append(word)\nprint(long_words)\n```\n\nFinal answer: ['hello', 'python']"
+  ],
+  [
+   "Given a list of numbers, reverse the order of the elements using slicing.",
+   "Step 1: Start with a list of numbers.\nStep 2: Use slicing with a step of -1 to reverse the list.\nStep 3: Store the reversed list in a new variable.\nStep 4: Print the reversed list.\n\nCode:\n```python\nnumbers = [1, 2, 3, 4, 5]\nreversed_numbers = numbers[::-1]\nprint(reversed_numbers)\n```\n\nFinal answer: [5, 4, 3, 2, 1]"
+  ],
+  [
+   "Write a program that prints all even numbers from 1 to 10 using a for loop.",
+   "Step 1: Use a for loop to iterate through numbers from 1 to 10.\nStep 2: Check if each number is even using the modulo operator (%).\nStep 3: If the number is even (i.e., number % 2 == 0), print it.\nCode:\nfor i in range(1, 11):\n    if i % 2 == 0:\n        print(i)\nFinal answer: 2 4 6 8 10"
+  ],
+  [
+   "Write a program that prints the numbers from 1 to 5 using a while loop.",
+   "Step 1: Initialize a variable, say i, to 1.\nStep 2: Use a while loop that continues as long as i is less than or equal to 5.\nStep 3: Inside the loop, print the current value of i.\nStep 4: Increment i by 1 at the end of each iteration.\nCode:\ni = 1\nwhile i <= 5:\n    print(i)\n    i += 1\nFinal answer: 1 2 3 4 5"
+  ],
+  [
+   "Write a program that calculates the sum of all numbers from 1 to 10 using a for loop.",
+   "Step 1: Initialize a variable sum to 0.\nStep 2: Use a for loop to iterate through numbers from 1 to 10.\nStep 3: Add each number to the sum variable inside the loop.\nStep 4: Print the final sum after the loop ends.\nCode:\nsum = 0\nfor i in range(1, 11):\n    sum += i\nprint(sum)\nFinal answer: 55"
+  ],
+  [
+   "Write a program that prints each character of the string 'hello' using a for loop.",
+   "Step 1: Define a string variable with the value 'hello'.\nStep 2: Use a for loop to iterate through each character in the string.\nStep 3: Print each character as it is accessed.\nCode:\nword = 'hello'\nfor char in word:\n    print(char)\nFinal answer: h e l l o"
+  ],
+  [
+   "Write a function that takes two numbers and returns their sum.",
+   "Step 1: Define a function named 'add' that takes two parameters, num1 and num2.\nStep 2: Inside the function, return the sum of num1 and num2.\nStep 3: Test the function with example inputs.\n\nCode:\n\ndef add(num1, num2):\n    return num1 + num2\n\n# Test\nresult = add(3, 5)\nresult\n\nFinal answer: 8"
+  ],
+  [
+   "Write a function that takes a string and returns its length.",
+   "Step 1: Define a function named 'get_length' that takes one parameter, string.\nStep 2: Use the built-in len() function to calculate the length of the string.\nStep 3: Return the length.\nStep 4: Test the function with an example.\n\nCode:\n\ndef get_length(string):\n    return len(string)\n\n# Test\nresult = get_length('hello')\nresult\n\nFinal answer: 5"
+  ],
+  [
+   "Write a function that takes a list of numbers and returns the largest number.",
+   "Step 1: Define a function named 'find_max' that takes one parameter, numbers (a list).\nStep 2: Use the built-in max() function to find the largest number in the list.\nStep 3: Return the maximum value.\nStep 4: Test the function with an example.\n\nCode:\n\ndef find_max(numbers):\n    return max(numbers)\n\n# Test\nresult = find_max([1, 5, 3, 9, 2])\nresult\n\nFinal answer: 9"
+  ],
+  [
+   "Write a function that checks if a number is even and returns True if it is, False otherwise.",
+   "Step 1: Define a function named 'is_even' that takes one parameter, num.\nStep 2: Use the modulo operator (%) to check if the number is divisible by 2.\nStep 3: If num % 2 == 0, return True; otherwise, return False.\nStep 4: Test the function with examples.\n\nCode:\n\ndef is_even(num):\n    if num % 2 == 0:\n        return True\n    else:\n        return False\n\n# Test\nresult = is_even(4)\nresult\n\nFinal answer: True"
+  ],
+  [
+   "Create a dictionary that stores the names of three fruits and their corresponding colors. Then, print the color of the fruit 'apple'.",
+   "Step 1: Create a dictionary with fruit names as keys and their colors as values.\nStep 2: Access the value associated with the key 'apple'.\nStep 3: Print the result.\n\nCode:\nfruits = {'apple': 'red', 'banana': 'yellow', 'grape': 'purple'}\nprint(fruits['apple'])\n\nFinal answer: red"
+  ],
+  [
+   "Create a dictionary to store the names of students and their corresponding ages. Then, add a new student named 'Charlie' with age 10. Finally, print the updated dictionary.",
+   "Step 1: Initialize a dictionary with student names and ages.\nStep 2: Add a new entry for 'Charlie' with age 10.\nStep 3: Print the updated dictionary.\n\nCode:\nstudents = {'Alice': 12, 'Bob': 11}\nstudents['Charlie'] = 10\nprint(students)\n\nFinal answer: {'Alice': 12, 'Bob': 11, 'Charlie': 10}"
+  ],
+  [
+   "You have a dictionary with the names of cities and their populations. Write code to find the city with the highest population and print its name.",
+   "Step 1: Create a dictionary with cities and their populations.\nStep 2: Use the max() function with a key to find the city with the highest population.\nStep 3: Print the name of the city.\n\nCode:\ncities = {'New York': 8500000, 'Los Angeles': 4000000, 'Chicago': 2700000}\nmax_city = max(cities, key=cities.get)\nprint(max_city)\n\nFinal answer: New York"
+  ],
+  [
+   "Given a dictionary of student names and their grades, write code to calculate and print the average grade.",
+   "Step 1: Create a dictionary with student names and their grades.\nStep 2: Sum all the grades using the sum() function.\nStep 3: Divide the total sum by the number of students to get the average.\nStep 4: Print the average.\n\nCode:\ngrades = {'Alice': 85, 'Bob': 90, 'Charlie': 78}\naverage = sum(grades.values()) / len(grades)\nprint(average)\n\nFinal answer: 84.33333333333333"
+  ],
+  [
+   "Write a function to calculate the sum of all numbers from 1 to n using recursion.",
+   "Step 1: Define the base case. If n is 1, return 1.\nStep 2: For n > 1, the sum is n plus the sum of numbers from 1 to n-1.\nStep 3: Use recursion to compute the sum of numbers from 1 to n-1.\nStep 4: Combine the result: n + sum(n-1).\n\nCode:\n```python\ndef sum_recursive(n):\n    if n == 1:\n        return 1\n    else:\n        return n + sum_recursive(n - 1)\n```\n\nFinal answer: 15"
+  ],
+  [
+   "Write a function to reverse a string using recursion.",
+   "Step 1: Define the base case. If the string is empty or has one character, return the string.\nStep 2: For longer strings, take the last character and concatenate it with the reverse of the remaining substring.\nStep 3: Use recursion to reverse the substring excluding the last character.\nStep 4: Combine the last character with the reversed substring.\n\nCode:\n```python\ndef reverse_string(s):\n    if len(s) <= 1:\n        return s\n    else:\n        return s[-1] + reverse_string(s[:-1])\n```\n\nFinal answer: 'dlrow olleh'"
+  ],
+  [
+   "Write a function to find the factorial of a number using recursion.",
+   "Step 1: Define the base case. If n is 0 or 1, return 1.\nStep 2: For n > 1, the factorial is n multiplied by the factorial of (n-1).\nStep 3: Use recursion to compute factorial(n-1).\nStep 4: Combine the result: n * factorial(n-1).\n\nCode:\n```python\ndef factorial(n):\n    if n == 0 or n == 1:\n        return 1\n    else:\n        return n * factorial(n - 1)\n```\n\nFinal answer: 120"
+  ],
+  [
+   "Write a function to check if a number is even using recursion.",
+   "Step 1: Define the base case. If n is 0, return True (0 is even).\nStep 2: If n is 1, return False (1 is odd).\nStep 3: For n > 1, subtract 2 from n and check if the result is even.\nStep 4: Use recursion to check the result of n-2.\n\nCode:\n```python\ndef is_even(n):\n    if n == 0:\n        return True\n    elif n == 1:\n        return False\n    else:\n        return is_even(n - 2)\n```\n\nFinal answer: True"
+  ],
+  [
+   "Sort a list of integers in ascending order.",
+   "Step 1: Start with a list of integers, for example: [5, 2, 8, 1, 9].\nStep 2: Use the built-in `sorted()` function to sort the list in ascending order.\nStep 3: Assign the result to a new variable or use it directly.\nStep 4: Print or return the sorted list.\n\nCode:\nnumbers = [5, 2, 8, 1, 9]\nsorted_numbers = sorted(numbers)\nprint(sorted_numbers)\n\nFinal answer: [1, 2, 5, 8, 9]"
+  ],
+  [
+   "Sort a list of strings in alphabetical order.",
+   "Step 1: Start with a list of strings, such as: ['banana', 'apple', 'cherry', 'date'].\nStep 2: Use the `sorted()` function to sort the strings alphabetically.\nStep 3: Store the sorted list in a new variable.\nStep 4: Output the sorted list.\n\nCode:\nfruits = ['banana', 'apple', 'cherry', 'date']\nsorted_fruits = sorted(fruits)\nprint(sorted_fruits)\n\nFinal answer: ['apple', 'banana', 'cherry', 'date']"
+  ],
+  [
+   "Sort a list of tuples by the second element in each tuple.",
+   "Step 1: Start with a list of tuples, for example: [(1, 5), (2, 3), (3, 8), (4, 1)].\nStep 2: Use the `sorted()` function with a `key` parameter to sort based on the second element of each tuple.\nStep 3: Use a lambda function to specify that the second element (index 1) should be used for sorting.\nStep 4: Print the sorted list.\n\nCode:\ntuples = [(1, 5), (2, 3), (3, 8), (4, 1)]\nsorted_tuples = sorted(tuples, key=lambda x: x[1])\nprint(sorted_tuples)\n\nFinal answer: [(4, 1), (2, 3), (1, 5), (3, 8)]"
+  ],
+  [
+   "Sort a list of dictionaries by a specific key, such as 'age'.",
+   "Step 1: Start with a list of dictionaries, for example: [{'name': 'Alice', 'age': 25}, {'name': 'Bob', 'age': 20}, {'name': 'Charlie', 'age': 30}].\nStep 2: Use the `sorted()` function with a `key` parameter to sort by the 'age' key.\nStep 3: Use a lambda function to extract the 'age' value from each dictionary.\nStep 4: Print the sorted list.\n\nCode:people = [{'name': 'Alice', 'age': 25}, {'name': 'Bob', 'age': 20}, {'name': 'Charlie', 'age': 30}]\nsorted_people = sorted(people, key=lambda x: x['age'])\nprint(sorted_people)\n\nFinal answer: [{'name': 'Bob', 'age': 20}, {'name': 'Alice', 'age': 25}, {'name': 'Charlie', 'age': 30}]"
+  ],
+  [
+   "Write a Python program that checks if a number is even or odd. If the number is even, print 'Even'; otherwise, print 'Odd'.",
+   "Step 1: Take input from the user and convert it to an integer.\nStep 2: Use the modulo operator (%) to check if the number is divisible by 2.\nStep 3: If the remainder is 0, the number is even.\nStep 4: Otherwise, it is odd.\n\nCode:\nnumber = int(input('Enter a number: '))\nif number % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')\n\nFinal answer: Even (if the number is 4)"
+  ],
+  [
+   "Write a Python program that checks if a person is eligible to vote. A person is eligible if their age is 18 or older.",
+   "Step 1: Take the person's age as input.\nStep 2: Use a conditional statement to check if the age is greater than or equal to 18.\nStep 3: If true, print 'Eligible to vote'.\nStep 4: Otherwise, print 'Not eligible to vote'.\n\nCode:\nage = int(input('Enter your age: '))\nif age >= 18:\n    print('Eligible to vote')\nelse:\n    print('Not eligible to vote')\n\nFinal answer: Eligible to vote (if age is 20)"
+  ],
+  [
+   "Write a Python program that determines whether a given year is a leap year or not. A year is a leap year if it is divisible by 4, but not divisible by 100, unless it is also divisible by 400.",
+   "Step 1: Take a year as input.\nStep 2: Check if the year is divisible by 4.\nStep 3: If it is divisible by 4, check if it is divisible by 100.\nStep 4: If divisible by 100, check if it is divisible by 400.\nStep 5: If all conditions meet leap year criteria, print 'Leap year', otherwise 'Not a leap year'.\n\nCode:\nyear = int(input('Enter a year: '))\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print('Leap year')\nelse:\n    print('Not a leap year')\n\nFinal answer: Leap year (if year is 2000)"
+  ],
+  [
+   "Write a Python program that compares two numbers and prints which one is greater.",
+   "Step 1: Take two numbers as input from the user.\nStep 2: Use an if-elif-else structure to compare the two numbers.\nStep 3: If the first number is greater, print 'First number is greater'.\nStep 4: If the second number is greater, print 'Second number is greater'.\nStep 5: If both are equal, print 'Both numbers are equal'.\n\nCode:\nnum1 = float(input('Enter the first number: '))\nnum2 = float(input('Enter the second number: '))\nif num1 > num2:\n    print('First number is greater')\nelif num2 > num1:\n    print('Second number is greater')\nelse:\n    print('Both numbers are equal')\n\nFinal answer: First number is greater (if num1 is 10 and num2 is 5)"
+  ],
+  [
+   "Given a string, reverse the characters in the string and return the reversed string.",
+   "Step 1: Start with a string, for example, \"hello\".\nStep 2: Use Python's slicing feature to reverse the string.\nStep 3: The syntax for reversing a string is string[::-1].\nStep 4: Apply this to the string and return the result.\n\nCode:\nreversed_string = \"hello\"[::-1]\n\nFinal answer: olleh"
+  ],
+  [
+   "Given a string, count how many times a specific character appears in it.",
+   "Step 1: Start with a string, for example, \"banana\".\nStep 2: Choose a character to count, for example, 'a'.\nStep 3: Use the string method .count() to count occurrences of the character.\nStep 4: Store the result and return it.\n\nCode:\ncount = \"banana\".count('a')\n\nFinal answer: 3"
+  ],
+  [
+   "Given a string, convert all characters to uppercase and return the result.",
+   "Step 1: Start with a string, for example, \"hello\".\nStep 2: Use the .upper() method to convert all characters to uppercase.\nStep 3: Store the result in a variable.\nStep 4: Return the uppercase string.\n\nCode:\nuppercase_string = \"hello\".upper()\n\nFinal answer: HELLO"
+  ],
+  [
+   "Given a string, check if it is a palindrome (reads the same forwards and backwards).",
+   "Step 1: Start with a string, for example, \"racecar\".\nStep 2: Reverse the string using slicing [::-1].\nStep 3: Compare the original string with the reversed string.\nStep 4: Return True if they are the same, False otherwise.\n\nCode:\nis_palindrome = \"racecar\" == \"racecar\"[::-1]\n\nFinal answer: True"
+  ],
+  [
+   "Create a list of the first 5 positive even numbers and print it.",
+   "Step 1: Start by defining a list.\nStep 2: Add the first 5 positive even numbers: 2, 4, 6, 8, 10.\nStep 3: Assign these numbers to a list variable.\nStep 4: Print the list.\n\nCode:\nmy_list = [2, 4, 6, 8, 10]\nprint(my_list)\n\nFinal answer: [2, 4, 6, 8, 10]"
+  ],
+  [
+   "Given a list of names, find and print the length of the longest name.",
+   "Step 1: Define a list of names.\nStep 2: Initialize a variable to keep track of the maximum length.\nStep 3: Loop through each name in the list.\nStep 4: Compare the length of each name with the current maximum length.\nStep 5: Update the maximum length if a longer name is found.\nStep 6: Print the maximum length.\n\nCode:\nnames = ['Alice', 'Bob', 'Christina', 'David']\nmax_length = 0\nfor name in names:\n    if len(name) > max_length:\n        max_length = len(name)\nprint(max_length)\n\nFinal answer: 9"
+  ],
+  [
+   "Given a list of numbers, calculate the sum of all even numbers and print it.",
+   "Step 1: Define a list of numbers.\nStep 2: Initialize a variable to store the sum.\nStep 3: Loop through each number in the list.\nStep 4: Check if the number is even (divisible by 2).\nStep 5: If it is even, add it to the sum.\nStep 6: Print the total sum.\n\nCode:\nnumbers = [1, 2, 3, 4, 5, 6]\nsum_even = 0\nfor num in numbers:\n    if num % 2 == 0:\n        sum_even += num\nprint(sum_even)\n\nFinal answer: 12"
+  ],
+  [
+   "Given a list of fruits, add a new fruit to the end of the list and print the updated list.",
+   "Step 1: Define a list of fruits.\nStep 2: Use the append() method to add a new fruit to the end of the list.\nStep 3: Print the updated list.\n\nCode:\nfruits = ['apple', 'banana', 'cherry']\nfruits.append('date')\nprint(fruits)\n\nFinal answer: ['apple', 'banana', 'cherry', 'date']"
+  ],
+  [
+   "Print all numbers from 1 to 10 using a for loop.",
+   "Step 1: Use a for loop with the range function to iterate from 1 to 10.\nStep 2: In each iteration, print the current number.\nCode:\nfor i in range(1, 11):\n    print(i)\nFinal answer: 1 2 3 4 5 6 7 8 9 10"
+  ],
+  [
+   "Print the squares of numbers from 1 to 5 using a while loop.",
+   "Step 1: Initialize a variable i to 1.\nStep 2: Use a while loop that continues as long as i is less than or equal to 5.\nStep 3: Inside the loop, print the square of i.\nStep 4: Increment i by 1 in each iteration.\nCode:\ni = 1\nwhile i <= 5:\n    print(i ** 2)\n    i += 1\nFinal answer: 1 4 9 16 25"
+  ],
+  [
+   "Find the sum of all numbers from 1 to 10 using a for loop.",
+   "Step 1: Initialize a variable total to 0.\nStep 2: Use a for loop to iterate through numbers 1 to 10.\nStep 3: Add each number to total in each iteration.\nStep 4: After the loop, print total.\nCode:\ntotal = 0\nfor i in range(1, 11):\n    total += i\nprint(total)\nFinal answer: 55"
+  ],
+  [
+   "Print each character of the string 'hello' using a for loop.",
+   "Step 1: Use a for loop to iterate over the characters in the string 'hello'.\nStep 2: In each iteration, print the current character.\nCode:\nfor char in 'hello':\n    print(char)\nFinal answer: h\ne\nl\nl\no"
+  ],
+  [
+   "Write a function that takes two numbers as input and returns their sum.",
+   "Step 1: Define a function named 'add' that takes two parameters, 'a' and 'b'.\nStep 2: Inside the function, return the sum of 'a' and 'b'.\nStep 3: Call the function with two numbers, e.g., add(3, 5), to test it.\nCode:\n\ndef add(a, b):\n    return a + b\n\nresult = add(3, 5)\nprint(result)\n\nFinal answer: 8"
+  ],
+  [
+   "Write a function that checks if a given number is even or odd and returns 'Even' or 'Odd'.",
+   "Step 1: Define a function named 'check_even_odd' that takes one parameter, 'num'.\nStep 2: Use the modulo operator (%) to check if 'num' is divisible by 2.\nStep 3: If 'num % 2 == 0', return 'Even'; otherwise, return 'Odd'.\nStep 4: Test the function with a number like 7.\nCode:\n\ndef check_even_odd(num):\n    if num % 2 == 0:\n        return 'Even'\n    else:\n        return 'Odd'\n\nresult = check_even_odd(7)\nprint(result)\n\nFinal answer: Odd"
+  ],
+  [
+   "Write a function that takes a list of numbers and returns the largest number.",
+   "Step 1: Define a function named 'find_largest' that takes one parameter, 'numbers', which is a list.\nStep 2: Use the built-in 'max()' function to find the largest number in the list.\nStep 3: Return the result.\nStep 4: Test the function with a list like [4, 2, 9, 1].\nCode:\n\ndef find_largest(numbers):\n    return max(numbers)\n\nresult = find_largest([4, 2, 9, 1])\nprint(result)\n\nFinal answer: 9"
+  ],
+  [
+   "Write a function that takes a string and returns the number of vowels in it.",
+   "Step 1: Define a function named 'count_vowels' that takes one parameter, 'text', which is a string.\nStep 2: Create a set of vowels: 'a', 'e', 'i', 'o', 'u' (both lowercase).\nStep 3: Initialize a counter variable to 0.\nStep 4: Loop through each character in the string.\nStep 5: If the character is in the vowels set, increment the counter.\nStep 6: Return the counter.\nStep 7: Test with the string 'hello'.\nCode:\n\ndef count_vowels(text):\n    vowels = {'a', 'e', 'i', 'o', 'u'}\n    count = 0\n    for char in text:\n        if char.lower() in vowels:\n            count += 1\n    return count\n\nresult = count_vowels('hello')\nprint(result)\n\nFinal answer: 2"
+  ],
+  [
+   "Create a dictionary that stores the names of three students and their corresponding ages. The students are Alice (18), Bob (20), and Charlie (19). Retrieve and print Bob's age.",
+   "Step 1: Create a dictionary with student names as keys and their ages as values.\nStep 2: Access the value associated with the key 'Bob'.\nStep 3: Print the value.\n\nCode:\nstudent_ages = {'Alice': 18, 'Bob': 20, 'Charlie': 19}\nprint(student_ages['Bob'])\n\nFinal answer: 20"
+  ],
+  [
+   "Given a dictionary representing a book with keys 'title', 'author', and 'year', write code to add a new key 'genre' with the value 'Fantasy'. Then print the updated dictionary.",
+   "Step 1: Start with the initial dictionary: {'title': 'The Hobbit', 'author': 'J.R.R. Tolkien', 'year': 1937}.\nStep 2: Add a new key-value pair: 'genre': 'Fantasy'.\nStep 3: Print the updated dictionary.\n\nCode:\nbook = {'title': 'The Hobbit', 'author': 'J.R.R. Tolkien', 'year': 1937}\nbook['genre'] = 'Fantasy'\nprint(book)\n\nFinal answer: {'title': 'The Hobbit', 'author': 'J.R.R. Tolkien', 'year': 1937, 'genre': 'Fantasy'}"
+  ],
+  [
+   "Create a dictionary for a shopping cart where keys are item names and values are their prices. Add items: 'apple' (1.2), 'banana' (0.8), and 'cherry' (2.5). Then calculate and print the total cost of all items.",
+   "Step 1: Initialize an empty dictionary for the shopping cart.\nStep 2: Add items with their prices to the dictionary.\nStep 3: Use a loop or sum() to calculate the total cost of all values.\nStep 4: Print the total cost.\n\nCode:\nshopping_cart = {}\nshopping_cart['apple'] = 1.2\nshopping_cart['banana'] = 0.8\nshopping_cart['cherry'] = 2.5\n\ntotal_cost = sum(shopping_cart.values())\nprint(total_cost)\n\nFinal answer: 4.5"
+  ],
+  [
+   "Create a dictionary that maps months (as strings) to their corresponding number of days in a non-leap year. For example, 'January' -> 31. Include at least 3 months. Then check if 'February' is in the dictionary and print its number of days if it exists, otherwise print 'February not found'.",
+   "Step 1: Create a dictionary mapping month names to their number of days.\nStep 2: Check if 'February' is a key in the dictionary.\nStep 3: If it exists, print the number of days; otherwise, print a message.\n\nCode:\nmonths = {'January': 31, 'March': 31, 'April': 30}\n\nif 'February' in months:\n    print(months['February'])\nelse:\n    print('February not found')\n\nFinal answer: February not found"
+  ],
+  [
+   "Write a function to calculate the factorial of a number using recursion.",
+   "Step 1: Define the base case. If the number is 0 or 1, return 1.\nStep 2: For any other number n, return n multiplied by the factorial of (n-1).\nStep 3: Implement the function.\n\nCode:\n```python\ndef factorial(n):\n    if n == 0 or n == 1:\n        return 1\n    return n * factorial(n - 1)\n```\n\nTest with n = 5:\n- factorial(5) = 5 * factorial(4)\n- factorial(4) = 4 * factorial(3)\n- factorial(3) = 3 * factorial(2)\n- factorial(2) = 2 * factorial(1)\n- factorial(1) = 1\n\nBacktracking:\n- factorial(2) = 2 * 1 = 2\n- factorial(3) = 3 * 2 = 6\n- factorial(4) = 4 * 6 = 24\n- factorial(5) = 5 * 24 = 120\n\nFinal answer: 120"
+  ],
+  [
+   "Write a function to compute the sum of all numbers in a list using recursion.",
+   "Step 1: Define the base case. If the list is empty, return 0.\nStep 2: Otherwise, return the first element plus the sum of the rest of the list.\nStep 3: Implement the function.\n\nCode:\n```python\ndef sum_list(lst):\n    if len(lst) == 0:\n        return 0\n    return lst[0] + sum_list(lst[1:])\n```\n\nTest with lst = [1, 2, 3, 4]:\n- sum_list([1, 2, 3, 4]) = 1 + sum_list([2, 3, 4])\n- sum_list([2, 3, 4]) = 2 + sum_list([3, 4])\n- sum_list([3, 4]) = 3 + sum_list([4])\n- sum_list([4]) = 4 + sum_list([])\n- sum_list([]) = 0\n\nBacktracking:\n- sum_list([4]) = 4 + 0 = 4\n- sum_list([3, 4]) = 3 + 4 = 7\n- sum_list([2, 3, 4]) = 2 + 7 = 9\n- sum_list([1, 2, 3, 4]) = 1 + 9 = 10\n\nFinal answer: 10"
+  ],
+  [
+   "Write a function to reverse a string using recursion.",
+   "Step 1: Define the base case. If the string is empty or has only one character, return the string itself.\nStep 2: Otherwise, return the last character plus the reverse of the substring without the last character.\nStep 3: Implement the function.\n\nCode:\n```python\ndef reverse_string(s):\n    if len(s) <= 1:\n        return s\n    return s[-1] + reverse_string(s[:-1])\n```\n\nTest with s = 'hello':\n- reverse_string('hello') = 'o' + reverse_string('hell')\n- reverse_string('hell') = 'l' + reverse_string('hell')\n- reverse_string('hell') = 'l' + reverse_string('hell')\n- reverse_string('hell') = 'l' + reverse_string('hell')\n- reverse_string('hell') = 'l' + reverse_string('hell')\n\nWait, let's correct:\n- reverse_string('hello') = 'o' + reverse_string('hell')\n- reverse_string('hell') = 'l' + reverse_string('hel')\n- reverse_string('hel') = 'l' + reverse_string('he')\n- reverse_string('he') = 'e' + reverse_string('h')\n- reverse_string('h') = 'h'\n\nBacktracking:\n- reverse_string('he') = 'e' + 'h' = 'eh'\n- reverse_string('hel') = 'l' + 'eh' = 'leh'\n- reverse_string('hell') = 'l' + 'leh' = 'lleh'\n- reverse_string('hello') = 'o' + 'lleh' = 'olleh'\n\nFinal answer: olleh"
+  ],
+  [
+   "Write a function to check if a string is a palindrome using recursion.",
+   "Step 1: Define the base case. If the string has 0 or 1 character, return True.\nStep 2: Otherwise, check if the first and last characters are equal. If they are, recursively check the substring without the first and last characters.\nStep 3: Implement the function.\n\nCode:\n```python\ndef is_palindrome(s):\n    if len(s) <= 1:\n        return True\n    if s[0] != s[-1]:\n        return False\n    return is_palindrome(s[1:-1])\n```\n\nTest with s = 'racecar':\n- is_palindrome('racecar') = True because 'r' == 'r' and is_palindrome('aceca')\n- is_palindrome('aceca') = True because 'a' == 'a' and is_palindrome('cec')\n- is_palindrome('cec') = True because 'c' == 'c' and is_palindrome('e')\n- is_palindrome('e') = True (base case)\n\nBacktracking: all returns are True.\n\nTest with s = 'hello':\n- is_palindrome('hello') = False because 'h' != 'o'\n\nFinal answer: True"
+  ],
+  [
+   "Sort a list of integers in ascending order.",
+   "Step 1: Start with a list of integers, for example: [3, 1, 4, 1, 5, 9, 2]\nStep 2: Use Python's built-in sorted() function to sort the list.\nStep 3: Assign the sorted list to a new variable.\nStep 4: Print the sorted list.\n\nCode:\nnumbers = [3, 1, 4, 1, 5, 9, 2]\nsorted_numbers = sorted(numbers)\nprint(sorted_numbers)\n\nFinal answer: [1, 1, 2, 3, 4, 5, 9]"
+  ],
+  [
+   "Sort a list of strings in alphabetical order.",
+   "Step 1: Start with a list of strings, for example: ['banana', 'apple', 'cherry', 'date']\nStep 2: Use Python's built-in sorted() function to sort the list alphabetically.\nStep 3: Assign the sorted list to a new variable.\nStep 4: Print the sorted list.\n\nCode:\nfruits = ['banana', 'apple', 'cherry', 'date']\nsorted_fruits = sorted(fruits)\nprint(sorted_fruits)\n\nFinal answer: ['apple', 'banana', 'cherry', 'date']"
+  ],
+  [
+   "Sort a list of dictionaries by a specific key (e.g., 'age').",
+   "Step 1: Start with a list of dictionaries, for example: [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}, {'name': 'Charlie', 'age': 35}]\nStep 2: Use the sorted() function with a key parameter using the lambda function to sort by the 'age' key.\nStep 3: Assign the sorted list to a new variable.\nStep 4: Print the sorted list.\n\nCode:\npeople = [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}, {'name': 'Charlie', 'age': 35}]\nsorted_people = sorted(people, key=lambda x: x['age'])\nprint(sorted_people)\n\nFinal answer: [{'name': 'Bob', 'age': 25}, {'name': 'Alice', 'age': 30}, {'name': 'Charlie', 'age': 35}]"
+  ],
+  [
+   "Sort a list of tuples by the second element in each tuple.",
+   "Step 1: Start with a list of tuples, for example: [(1, 'apple'), (3, 'cherry'), (2, 'banana')]\nStep 2: Use the sorted() function with a key parameter using lambda to sort by the second element (index 1).\nStep 3: Assign the sorted list to a new variable.\nStep 4: Print the sorted list.\n\nCode:\ntuples = [(1, 'apple'), (3, 'cherry'), (2, 'banana')]\nsorted_tuples = sorted(tuples, key=lambda x: x[1])\nprint(sorted_tuples)\n\nFinal answer: [(1, 'apple'), (2, 'banana'), (3, 'cherry')]"
+  ],
+  [
+   "Write a Python program that checks if a number is positive, negative, or zero.",
+   "Step 1: Ask the user to input a number.\nStep 2: Use an if-elif-else statement to check the value of the number.\nStep 3: If the number is greater than 0, print 'Positive'.\nStep 4: If the number is less than 0, print 'Negative'.\nStep 5: Otherwise, print 'Zero'.\n\nCode:\n```python\nnum = float(input('Enter a number: '))\nif num > 0:\n    print('Positive')\nelif num < 0:\n    print('Negative')\nelse:\n    print('Zero')\n```\nFinal answer: The program outputs 'Positive' if the number is positive, 'Negative' if negative, and 'Zero' if zero."
+  ],
+  [
+   "Write a Python program that determines if a year is a leap year.",
+   "Step 1: Ask the user to input a year.\nStep 2: Use conditional statements to check the leap year rules.\nStep 3: A year is a leap year if it is divisible by 4.\nStep 4: However, if it is divisible by 100, it must also be divisible by 400 to be a leap year.\nStep 5: Print 'Leap year' or 'Not a leap year' based on the conditions.\n\nCode:\n```python\nyear = int(input('Enter a year: '))\nif (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):\n    print('Leap year')\nelse:\n    print('Not a leap year')\n```\nFinal answer: The program correctly identifies leap years based on the given rules."
+  ],
+  [
+   "Write a Python program that checks if a person is eligible to vote based on age.",
+   "Step 1: Ask the user to input their age.\nStep 2: Use an if statement to compare the age with the voting age (18).\nStep 3: If the age is 18 or above, print 'Eligible to vote'.\nStep 4: Otherwise, print 'Not eligible to vote'.\n\nCode:\n```python\nage = int(input('Enter your age: '))\nif age >= 18:\n    print('Eligible to vote')\nelse:\n    print('Not eligible to vote')\n```\nFinal answer: The program outputs 'Eligible to vote' if age \u2265 18, otherwise 'Not eligible to vote'."
+  ],
+  [
+   "Write a Python program that determines if a number is even or odd.",
+   "Step 1: Ask the user to input a number.\nStep 2: Use the modulo operator (%) to check if the number is divisible by 2.\nStep 3: If the remainder is 0, the number is even.\nStep 4: Otherwise, the number is odd.\nStep 5: Print 'Even' or 'Odd' accordingly.\n\nCode:\n```python\nnum = int(input('Enter a number: '))\nif num % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')\n```\nFinal answer: The program outputs 'Even' if the number is divisible by 2, otherwise 'Odd'."
+  ],
+  [
+   "Write a function to reverse a given string. For example, if the input is 'hello', the output should be 'olleh'.",
+   "Step 1: Define a function that takes a string as input.\nStep 2: Use slicing to reverse the string by specifying a step of -1.\nStep 3: Return the reversed string.\n\nCode:\n```python\ndef reverse_string(s):\n    return s[::-1]\n```\n\nFinal answer: 'olleh'"
+  ],
+  [
+   "Write a function to count the number of vowels in a given string. For example, if the input is 'hello', the output should be 2.",
+   "Step 1: Define a function that takes a string as input.\nStep 2: Create a set of vowels for fast lookup.\nStep 3: Initialize a counter to 0.\nStep 4: Loop through each character in the string.\nStep 5: If the character is a vowel (case-insensitive), increment the counter.\nStep 6: Return the count.\n\nCode:\n```python\ndef count_vowels(s):\n    vowels = set('aeiouAEIOU')\n    count = 0\n    for char in s:\n        if char in vowels:\n            count += 1\n    return count\n```\n\nFinal answer: 2"
+  ],
+  [
+   "Write a function to check if a given string is a palindrome (reads the same forwards and backwards). For example, 'racecar' should return True.",
+   "Step 1: Define a function that takes a string as input.\nStep 2: Use slicing to reverse the string.\nStep 3: Compare the original string with its reverse.\nStep 4: Return True if they are the same, otherwise False.\n\nCode:\n```python\ndef is_palindrome(s):\n    return s == s[::-1]\n```\n\nFinal answer: True"
+  ],
+  [
+   "Write a function to remove all spaces from a given string. For example, if the input is 'hello world', the output should be 'helloworld'.",
+   "Step 1: Define a function that takes a string as input.\nStep 2: Use the replace() method to replace all spaces with an empty string.\nStep 3: Return the modified string.\n\nCode:\n```python\ndef remove_spaces(s):\n    return s.replace(' ', '')\n```\n\nFinal answer: 'helloworld'"
+  ],
+  [
+   "Create a list of the first 5 even numbers starting from 2 and print the list.",
+   "Step 1: Start by creating an empty list.\nStep 2: Use a loop to generate the first 5 even numbers starting from 2.\nStep 3: Append each even number to the list.\nStep 4: Print the list.\n\nCode:\nmy_list = []\nfor i in range(5):\n    my_list.append(2 * (i + 1))\nprint(my_list)\n\nFinal answer: [2, 4, 6, 8, 10]"
+  ],
+  [
+   "Write a program that takes a list of integers and returns the sum of all the elements.",
+   "Step 1: Define a list of integers.\nStep 2: Initialize a variable to store the sum, starting at 0.\nStep 3: Loop through each element in the list and add it to the sum.\nStep 4: Print the result.\n\nCode:\nnumbers = [1, 2, 3, 4, 5]\ntotal = 0\nfor num in numbers:\n    total += num\nprint(total)\n\nFinal answer: 15"
+  ],
+  [
+   "Given a list of strings, find the longest string and print it.",
+   "Step 1: Define a list of strings.\nStep 2: Initialize a variable to hold the longest string, starting with the first element.\nStep 3: Loop through each string in the list.\nStep 4: Compare the length of each string with the current longest string.\nStep 5: Update the longest string if a longer one is found.\nStep 6: Print the longest string.\n\nCode:\nstrings = ['apple', 'banana', 'cherry', 'date']\nlongest = strings[0]\nfor string in strings:\n    if len(string) > len(longest):\n        longest = string\nprint(longest)\n\nFinal answer: banana"
+  ],
+  [
+   "Create a list of the first 10 Fibonacci numbers and print them.",
+   "Step 1: Initialize a list with the first two Fibonacci numbers, 0 and 1.\nStep 2: Use a loop to generate the next 8 Fibonacci numbers by adding the last two numbers in the list.\nStep 3: Append each new number to the list.\nStep 4: Print the final list.\n\nCode:\nfibonacci = [0, 1]\nfor i in range(8):\n    next_fib = fibonacci[-1] + fibonacci[-2]\n    fibonacci.append(next_fib)\nprint(fibonacci)\n\nFinal answer: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]"
+  ]
+ ],
+ "general_knowledge": [
+  [
+   "What is the SI unit of force?",
+   "The SI unit of force is defined based on Newton's second law of motion, F = ma, where F is force, m is mass, and a is acceleration. The unit of mass is the kilogram (kg), and the unit of acceleration is meters per second squared (m/s\u00b2). Multiplying these gives kg\u00b7m/s\u00b2, which is defined as a newton (N). Therefore, the SI unit of force is the newton.\nFinal answer: newton"
+  ],
+  [
+   "Why does a person feel lighter when standing in an elevator accelerating downward?",
+   "When an elevator accelerates downward, the normal force exerted by the floor on a person decreases. This happens because the person and the elevator are both accelerating downward, reducing the contact force between the person and the floor. The apparent weight, which is the normal force, becomes less than the actual weight (mg). As a result, the person feels lighter.\nFinal answer: Because the normal force decreases"
+  ],
+  [
+   "How does the speed of sound change in different media?",
+   "The speed of sound depends on the medium's density and elasticity. In general, sound travels faster in solids than in liquids, and faster in liquids than in gases. This is because solids are more rigid and have stronger intermolecular forces, allowing sound waves to propagate more quickly. For example, sound travels about 343 m/s in air, 1480 m/s in water, and around 5000 m/s in steel.\nFinal answer: It increases from gases to liquids to solids"
+  ],
+  [
+   "What happens to the wavelength of light when it passes from air into glass?",
+   "When light passes from air into glass, it slows down because glass has a higher refractive index than air. The frequency of light remains constant, but since the speed decreases, the wavelength must also decrease according to the equation v = f\u03bb, where v is speed, f is frequency, and \u03bb is wavelength. Therefore, the wavelength of light shortens in glass.\nFinal answer: It decreases"
+  ],
+  [
+   "What is the function of mitochondria in a cell?",
+   "Mitochondria are known as the powerhouse of the cell. They generate most of the cell's supply of adenosine triphosphate (ATP), which is used as a source of chemical energy. This process occurs through cellular respiration, which involves breaking down glucose in the presence of oxygen. The steps include glycolysis, the Krebs cycle, and the electron transport chain, all of which take place in the mitochondria. Final answer: To produce ATP through cellular respiration."
+  ],
+  [
+   "How does photosynthesis benefit the Earth's atmosphere?",
+   "Photosynthesis is a process used by plants, algae, and some bacteria to convert light energy into chemical energy. During this process, they absorb carbon dioxide (CO\u2082) from the atmosphere and release oxygen (O\u2082) as a byproduct. This helps maintain the balance of gases in the atmosphere, reducing greenhouse gases and providing oxygen essential for aerobic respiration in most organisms. Final answer: It increases oxygen levels and reduces carbon dioxide in the atmosphere."
+  ],
+  [
+   "What is the role of DNA in heredity?",
+   "DNA (deoxyribonucleic acid) carries the genetic instructions used in the development, functioning, and reproduction of all known living organisms. It is composed of two strands forming a double helix, with sequences of nucleotides that encode genes. These genes determine traits such as eye color, height, and susceptibility to diseases. During reproduction, DNA is replicated and passed from parents to offspring, ensuring the transmission of genetic information. Final answer: It stores and transmits genetic information from one generation to the next."
+  ],
+  [
+   "Why do organisms need enzymes?",
+   "Enzymes are biological catalysts that speed up chemical reactions in cells without being consumed. They lower the activation energy required for reactions to occur, allowing metabolic processes to happen efficiently at body temperature. For example, digestive enzymes break down food molecules so the body can absorb nutrients. Enzymes are highly specific, each catalyzing a particular reaction. Final answer: To speed up biochemical reactions in the body."
+  ],
+  [
+   "What is the chemical symbol for gold?",
+   "1. Recall that each element has a unique chemical symbol.\n2. Gold is a transition metal with the atomic number 79.\n3. Its chemical symbol is derived from its Latin name, 'aurum'.\n4. The symbol for gold is Au.\nFinal answer: Au"
+  ],
+  [
+   "Which gas makes up the majority of Earth's atmosphere?",
+   "1. The Earth's atmosphere is composed of several gases.\n2. Nitrogen makes up about 78% of the atmosphere.\n3. Oxygen is the second most abundant at about 21%.\n4. Other gases like argon, carbon dioxide, and trace gases make up the remaining 1%.\n5. Therefore, nitrogen is the most abundant gas.\nFinal answer: Nitrogen"
+  ],
+  [
+   "What is the molecular formula for water?",
+   "1. Water is a common compound made up of hydrogen and oxygen.\n2. Each water molecule consists of two hydrogen atoms bonded to one oxygen atom.\n3. The chemical formula is written as H\u2082O, where H represents hydrogen and O represents oxygen.\n4. The subscript 2 indicates two hydrogen atoms.\nFinal answer: H\u2082O"
+  ],
+  [
+   "What type of bond forms between atoms when electrons are shared?",
+   "1. Atoms can bond by transferring or sharing electrons.\n2. When electrons are shared between atoms, it forms a covalent bond.\n3. This bonding occurs typically between non-metal atoms.\n4. Examples include H\u2082, O\u2082, and H\u2082O.\nFinal answer: Covalent bond"
+  ],
+  [
+   "What was the primary cause of the Black Death in Europe during the 14th century?",
+   "The Black Death was primarily caused by the bacterium Yersinia pestis, which was spread by fleas that lived on infected rodents, particularly black rats. These rats were transported across Europe via trade ships and caravan routes, introducing the disease to densely populated urban areas. The fleas bit humans, transmitting the plague and leading to widespread illness and death.\nFinal answer: The spread of Yersinia pestis via fleas on black rats."
+  ],
+  [
+   "Which ancient civilization built the pyramids at Giza, and what was their main purpose?",
+   "The ancient Egyptians built the pyramids at Giza. They constructed these massive structures as tombs for their pharaohs, believing that the pyramids would help the pharaohs' souls ascend to the afterlife. The largest pyramid, built for Pharaoh Khufu, is a testament to the advanced engineering and organization of ancient Egyptian society.\nFinal answer: The ancient Egyptians built them as tombs for pharaohs."
+  ],
+  [
+   "What was the significance of the Treaty of Versailles in ending World War I?",
+   "The Treaty of Versailles, signed in 1919, officially ended World War I between Germany and the Allied Powers. It imposed heavy reparations on Germany, reduced its military, and required Germany to accept responsibility for the war. The treaty also led to the creation of new nations in Europe and the establishment of the League of Nations to prevent future conflicts.\nFinal answer: It ended WWI and imposed reparations and territorial changes on Germany."
+  ],
+  [
+   "Which event marked the beginning of the Industrial Revolution in Britain?",
+   "The Industrial Revolution in Britain began in the late 18th century, marked by the invention and widespread use of the steam engine by James Watt in 1776. This innovation revolutionized industries such as textile manufacturing and transportation, leading to mechanized production, increased factory output, and urban growth. The shift from agrarian economies to industrialized ones began in Britain due to technological and economic advancements.\nFinal answer: The invention and use of the steam engine by James Watt."
+  ],
+  [
+   "Which mountain range is the longest in the world?",
+   "Step 1: Consider major mountain ranges globally, such as the Himalayas, Andes, Rockies, and Alps.\nStep 2: Compare their lengths using geographical data.\nStep 3: The Andes mountain range stretches approximately 7,000 kilometers (4,300 miles) along the western edge of South America.\nStep 4: This makes it the longest mountain range in the world.\nFinal answer: Andes"
+  ],
+  [
+   "What is the largest desert in the world by area?",
+   "Step 1: Recall that deserts are typically defined by low precipitation, not just sand.\nStep 2: Consider well-known deserts like the Sahara, Gobi, and Antarctica.\nStep 3: Compare their areas\u2014Sahara is about 9.2 million square km, Gobi is about 1.2 million, and Antarctica is about 14 million square km.\nStep 4: Although Antarctica is a polar desert and not sandy, it is the largest by area.\nFinal answer: Antarctica"
+  ],
+  [
+   "Which river flows through the most countries in Europe?",
+   "Step 1: Identify major European rivers such as the Danube, Rhine, Volga, and Seine.\nStep 2: List the countries each river passes through.\nStep 3: The Danube flows through 10 countries: Germany, Austria, Slovakia, Hungary, Croatia, Serbia, Bulgaria, Romania, Moldova, and Ukraine.\nStep 4: No other European river flows through more countries.\nFinal answer: Danube"
+  ],
+  [
+   "What is the capital city of the country located on the southernmost tip of the Arabian Peninsula?",
+   "Step 1: Identify the country at the southernmost tip of the Arabian Peninsula\u2014this is Yemen.\nStep 2: Determine the capital city of Yemen.\nStep 3: Sanaa is the capital and largest city of Yemen.\nStep 4: Confirm that Sanaa is located on the Arabian Peninsula and is the southernmost country's capital.\nFinal answer: Sanaa"
+  ],
+  [
+   "What is the closest star to Earth besides the Sun?",
+   "Step 1: The Sun is the closest star to Earth.\nStep 2: The next closest star after the Sun is Proxima Centauri.\nStep 3: Proxima Centauri is part of the Alpha Centauri star system.\nStep 4: It is approximately 4.24 light-years away from Earth.\nFinal answer: Proxima Centauri"
+  ],
+  [
+   "Which planet has the most moons in our solar system?",
+   "Step 1: Count the number of moons for each planet in the solar system.\nStep 2: Jupiter has 79 confirmed moons as of recent data.\nStep 3: Saturn has 82 confirmed moons, making it the current record holder.\nStep 4: Therefore, Saturn has the most moons.\nFinal answer: Saturn"
+  ],
+  [
+   "What causes the phases of the Moon?",
+   "Step 1: The Moon orbits Earth approximately every 27.3 days.\nStep 2: The Moon does not produce its own light; it reflects sunlight.\nStep 3: As the Moon orbits Earth, the portion of the illuminated side visible from Earth changes.\nStep 4: This variation in the visible illuminated portion creates the moon phases.\nFinal answer: The changing angle between Earth, Moon, and the Sun"
+  ],
+  [
+   "What is a white dwarf in astronomy?",
+   "Step 1: A white dwarf is a type of stellar remnant.\nStep 2: It forms after a low- to medium-mass star has exhausted its nuclear fuel.\nStep 3: The outer layers are shed, forming a planetary nebula, and the core remains.\nStep 4: This core, composed mostly of carbon and oxygen, contracts and becomes a dense, hot stellar remnant.\nFinal answer: A dense, hot stellar remnant composed mainly of electron-degenerate matter"
+  ],
+  [
+   "Why do clouds float in the sky?",
+   "Clouds are made up of tiny water droplets or ice crystals. These droplets are very small and light, and the air around them is warm and rising, which helps keep the droplets suspended. As long as the rising air supports their weight, the clouds stay afloat.\nFinal answer: Clouds float because tiny water droplets or ice crystals are light enough to stay suspended in rising warm air."
+  ],
+  [
+   "Why does ice float on water?",
+   "Water is unique because it becomes less dense when it freezes. When water turns into ice, its molecules form a crystalline structure that takes up more space than liquid water. This means ice is less dense than liquid water, so it floats.\nFinal answer: Ice floats on water because it is less dense than liquid water due to its crystalline structure."
+  ],
+  [
+   "Why do we see rainbows after a rain shower?",
+   "Rainbows form when sunlight shines through raindrops. The raindrops act like tiny prisms, refracting (bending) the light and splitting it into its component colors. Each color bends at a slightly different angle, creating the arc of colors we see as a rainbow.\nFinal answer: Rainbows appear when sunlight is refracted and dispersed into colors by raindrops in the air."
+  ],
+  [
+   "Why do metals feel colder than wood at the same temperature?",
+   "Metals are good conductors of heat, so they transfer heat away from your skin quickly. Wood is a poor conductor, so it transfers heat more slowly. When you touch metal, it draws heat from your hand faster, making it feel colder even if both materials are at the same temperature.\nFinal answer: Metals feel colder than wood because they conduct heat away from your skin more quickly."
+  ],
+  [
+   "What is the SI unit of force?",
+   "The SI unit of force is the newton (N). It is defined as the force required to accelerate a mass of one kilogram at a rate of one meter per second squared. This is derived from Newton's second law of motion, F = ma, where F is force, m is mass, and a is acceleration. Since mass is measured in kilograms (kg) and acceleration in meters per second squared (m/s\u00b2), the unit of force is kg\u00b7m/s\u00b2, which is named the newton in honor of Sir Isaac Newton.\nFinal answer: newton"
+  ],
+  [
+   "How does the speed of sound vary with temperature in air?",
+   "The speed of sound in air increases with temperature. This is because higher temperatures cause air molecules to move faster, allowing sound waves to propagate more quickly. The relationship can be approximated by the formula v = 331 + 0.6T, where v is the speed of sound in meters per second and T is the temperature in degrees Celsius. At 0\u00b0C, sound travels at about 331 m/s, and for every degree increase in temperature, the speed increases by approximately 0.6 m/s.\nFinal answer: It increases with temperature"
+  ],
+  [
+   "What happens to the wavelength of light when it passes from air into glass?",
+   "When light travels from air into glass, it slows down because glass is a denser medium than air. Since the frequency of light remains constant during refraction, and the speed of light decreases, the wavelength must also decrease according to the equation v = f\u03bb, where v is speed, f is frequency, and \u03bb is wavelength. Therefore, the wavelength of light shortens upon entering glass.\nFinal answer: It decreases"
+  ],
+  [
+   "What is the primary cause of Earth's magnetic field?",
+   "Earth's magnetic field is primarily caused by the dynamo effect in its outer core. The outer core is composed of molten iron and nickel, which are electrically conductive. As the Earth rotates, convection currents move the molten metal, generating electric currents. These currents, in turn, produce a magnetic field through electromagnetic induction. This self-sustaining process is known as a geodynamo.\nFinal answer: Convection currents in the outer core generating electric currents"
+  ],
+  [
+   "What is the primary function of the mitochondria in a cell?",
+   "Mitochondria are known as the powerhouses of the cell because they generate most of the cell's supply of adenosine triphosphate (ATP), which is used as a source of chemical energy. This process occurs through cellular respiration, where nutrients are broken down in the presence of oxygen to release energy. The steps include glycolysis, the Krebs cycle, and the electron transport chain, all of which take place in or involve mitochondria. Final answer: To produce ATP through cellular respiration."
+  ],
+  [
+   "How does photosynthesis contribute to the oxygen in Earth's atmosphere?",
+   "Photosynthesis is the process used by plants, algae, and some bacteria to convert light energy into chemical energy. During this process, carbon dioxide and water are taken in and, using sunlight, are transformed into glucose and oxygen. The oxygen is released as a byproduct. This has been ongoing for billions of years and has significantly increased the amount of oxygen in the atmosphere. Final answer: By releasing oxygen as a byproduct of converting CO2 and water into glucose using sunlight."
+  ],
+  [
+   "What is the role of enzymes in biological reactions?",
+   "Enzymes are biological catalysts that speed up chemical reactions in cells without being consumed. They work by lowering the activation energy required for a reaction to proceed. Each enzyme is specific to a particular substrate, forming an enzyme-substrate complex. After the reaction, the enzyme remains unchanged and can be reused. Final answer: To speed up biochemical reactions by lowering activation energy."
+  ],
+  [
+   "What is the function of the circulatory system in animals?",
+   "The circulatory system, also known as the cardiovascular system, transports essential substances throughout the body. It carries oxygen and nutrients to cells and removes waste products like carbon dioxide. This system includes the heart, blood vessels, and blood. The heart pumps blood, which flows through arteries, capillaries, and veins to deliver and collect materials. Final answer: To transport oxygen, nutrients, hormones, and waste products throughout the body."
+  ],
+  [
+   "What is the molar mass of sodium chloride (NaCl)?",
+   "Step 1: Identify the atomic masses of sodium (Na) and chlorine (Cl) from the periodic table. Sodium has an atomic mass of approximately 22.99 g/mol, and chlorine has an atomic mass of approximately 35.45 g/mol.\nStep 2: Add the atomic masses together: 22.99 + 35.45 = 58.44 g/mol.\nFinal answer: 58.44 g/mol"
+  ],
+  [
+   "Why does water have a higher boiling point than methane (CH\u2084)?",
+   "Step 1: Recognize that boiling point depends on the strength of intermolecular forces.\nStep 2: Water molecules form hydrogen bonds due to the high electronegativity of oxygen and presence of H atoms bonded to O.\nStep 3: Methane molecules have only weak London dispersion forces.\nStep 4: Hydrogen bonds are stronger than dispersion forces, so more energy is required to boil water.\nFinal answer: Water has stronger hydrogen bonds than methane's dispersion forces."
+  ],
+  [
+   "Which element has the highest electronegativity?",
+   "Step 1: Recall that electronegativity is the tendency of an atom to attract shared electrons in a bond.\nStep 2: Consider the periodic trend: electronegativity increases across a period and decreases down a group.\nStep 3: Fluorine is located in group 17 and period 2, making it the top right element in the periodic table.\nStep 4: Fluorine is the most electronegative element with a value of 3.98 on the Pauling scale.\nFinal answer: Fluorine"
+  ],
+  [
+   "What is the balanced chemical equation for the combustion of methane?",
+   "Step 1: Write the reactants: methane (CH\u2084) and oxygen (O\u2082).\nStep 2: Write the products: carbon dioxide (CO\u2082) and water (H\u2082O).\nStep 3: Write the unbalanced equation: CH\u2084 + O\u2082 \u2192 CO\u2082 + H\u2082O.\nStep 4: Balance carbon atoms: 1 on each side.\nStep 5: Balance hydrogen: 4 H in CH\u2084, so 2 H\u2082O molecules needed.\nStep 6: Balance oxygen: 2 in CO\u2082 and 1 in each H\u2082O (total 2 + 2 = 4 O atoms), so 2 O\u2082 molecules needed.\nStep 7: Final balanced equation: CH\u2084 + 2O\u2082 \u2192 CO\u2082 + 2H\u2082O.\nFinal answer: CH\u2084 + 2O\u2082 \u2192 CO\u2082 + 2H\u2082O"
+  ],
+  [
+   "Which ancient civilization built the pyramids of Giza?",
+   "The pyramids of Giza were built by the ancient Egyptians. This civilization flourished along the Nile River in northeastern Africa. The construction of the pyramids occurred during the Old Kingdom period, around 2580\u20132560 BCE. The most famous of these pyramids is the Great Pyramid of Khufu, which was built as a tomb for the pharaoh Khufu. The pyramids were constructed using large stone blocks, and the builders used advanced engineering techniques for their time. Final answer: Ancient Egypt"
+  ],
+  [
+   "Who was the first emperor of the Roman Empire?",
+   "The first emperor of the Roman Empire was Augustus. He was originally known as Gaius Octavius, the adopted son and heir of Julius Caesar. After a series of civil wars, he became the sole ruler of Rome in 27 BCE. The Roman Senate granted him the title 'Augustus,' which means 'revered' or 'majestic.' This marked the beginning of the Roman Empire, replacing the Roman Republic. Final answer: Augustus"
+  ],
+  [
+   "What was the primary cause of the Black Death in 14th-century Europe?",
+   "The Black Death was primarily caused by the bacterium Yersinia pestis. It was spread through fleas that lived on infected rodents, particularly black rats. The disease was transmitted to humans through flea bites. The plague spread rapidly across Europe in the mid-14th century, carried by trade routes and ships. It caused massive mortality, killing an estimated one-third of the European population. Final answer: Bacterial infection from Yersinia pestis"
+  ],
+  [
+   "Which event marked the beginning of the Industrial Revolution in Britain?",
+   "The Industrial Revolution in Britain began in the late 18th century, marked by the development of steam power. A key event was the invention of the steam engine by James Watt in the 1770s, which improved upon earlier designs. This engine was used to power factories, mines, and later, transportation like steam locomotives. The mechanization of the textile industry, particularly with the invention of the spinning jenny, also played a crucial role. Final answer: The invention and widespread use of the steam engine"
+  ],
+  [
+   "What is the longest river in the world?",
+   "Step 1: Identify the rivers considered for the title of longest. The Nile and the Amazon are the two main contenders. \nStep 2: Compare their lengths. The Nile is approximately 6,650 km long, while the Amazon is about 6,400 km. \nStep 3: Conclude based on measurements. The Nile is longer by a small margin. \nFinal answer: The Nile River"
+  ],
+  [
+   "Which mountain range forms the natural border between France and Spain?",
+   "Step 1: Recall major mountain ranges in Western Europe. \nStep 2: Identify the range that lies along the border between France and Spain. \nThe Pyrenees are located between these two countries. \nStep 3: Confirm that it is a natural border. \nThe Pyrenees serve as a physical and cultural divide. \nFinal answer: The Pyrenees"
+  ],
+  [
+   "What is the capital of Canada?",
+   "Step 1: Identify the country in question \u2014 Canada. \nStep 2: Recall the capital city. While Toronto and Montreal are major cities, they are not the capital. \nStep 3: Confirm that Ottawa is the capital, established as such in 1857. \nFinal answer: Ottawa"
+  ],
+  [
+   "Which desert is the largest in the world by area?",
+   "Step 1: List major deserts \u2014 Sahara, Gobi, Arabian, Antarctic, etc. \nStep 2: Compare their sizes. The Sahara Desert spans about 9.2 million square kilometers. \nStep 3: Note that the Antarctic is larger in area but is classified as a cold desert. \nStep 4: Determine the largest hot desert \u2014 the Sahara is the largest hot desert. \nFinal answer: The Sahara Desert"
+  ],
+  [
+   "What is the main source of energy for stars like the Sun?",
+   "Stars generate energy through nuclear fusion, where hydrogen nuclei fuse to form helium. This process occurs in the star's core under high temperature and pressure. The mass difference between the initial hydrogen nuclei and the resulting helium nucleus is converted into energy according to Einstein's equation E=mc\u00b2. This energy is released as light and heat, sustaining the star's luminosity.\nFinal answer: Nuclear fusion of hydrogen into helium"
+  ],
+  [
+   "How do we measure the distance to nearby stars?",
+   "For nearby stars, we use the parallax method. As Earth orbits the Sun, the position of a nearby star appears to shift relative to more distant stars. This shift, called parallax, is measured in arcseconds. The distance to the star in parsecs is the inverse of its parallax angle in arcseconds. For example, a star with a parallax of 0.1 arcseconds is 10 parsecs away.\nFinal answer: Parallax method"
+  ],
+  [
+   "What causes a supernova explosion?",
+   "A supernova occurs when a massive star exhausts its nuclear fuel, leading to the collapse of its core. In massive stars, this collapse triggers a rebound that creates a shock wave, blowing apart the outer layers of the star. Alternatively, in white dwarfs in binary systems, if they accrete enough mass to exceed the Chandrasekhar limit (~1.4 solar masses), they undergo a thermonuclear explosion. Both processes result in a supernova.\nFinal answer: Core collapse or thermonuclear explosion of a star"
+  ],
+  [
+   "What is the composition of the solar system's asteroid belt?",
+   "The asteroid belt is located between the orbits of Mars and Jupiter. It consists of thousands of rocky bodies, called asteroids, which are remnants from the early solar system that never coalesced into a planet. These bodies are primarily composed of silicate rocks and metals like iron and nickel. The largest asteroid, Ceres, is now classified as a dwarf planet.\nFinal answer: Rocky bodies composed mainly of silicates and metals"
+  ],
+  [
+   "Why do we see rainbows after it rains?",
+   "Rainbows form when sunlight passes through raindrops. The light enters the raindrop, refracts (bends), reflects off the inside surface, and then refracts again as it exits. This process separates white light into its component colors due to different wavelengths bending by different amounts. The observer sees these colors in an arc. Final answer: Rainbows are formed by refraction, reflection, and dispersion of sunlight in raindrops."
+  ],
+  [
+   "Why does a balloon deflate over time?",
+   "Balloon material is made of elastic polymers with tiny pores. Over time, air molecules (like nitrogen and oxygen) slowly pass through these tiny openings in the balloon wall by a process called diffusion. This gradual escape of gas molecules causes the balloon to lose pressure and deflate. Final answer: Balloons deflate because air molecules diffuse through the balloon material."
+  ],
+  [
+   "Why do we feel cold when we step out of a warm shower?",
+   "When you step out of a warm shower, water on your skin begins to evaporate. Evaporation requires energy, which is taken from the surrounding environment\u2014your skin. This loss of heat from your skin makes you feel cold. Final answer: We feel cold because evaporation of water from skin removes heat."
+  ],
+  [
+   "Why do we see stars twinkle?",
+   "Stars appear to twinkle because their light travels through Earth's atmosphere. The atmosphere has varying temperatures and densities, which cause the light to refract (bend) in different directions as it passes through. These rapid changes in light direction make the star's brightness appear to flicker. Final answer: Stars twinkle due to atmospheric refraction of their light."
+  ],
+  [
+   "What is the SI unit of force, and how is it defined?",
+   "The SI unit of force is the newton (N). It is defined as the force required to accelerate a mass of one kilogram at a rate of one meter per second squared. This comes from Newton's second law of motion, F = ma. So, 1 N = 1 kg\u00b7m/s\u00b2. \nFinal answer: newton (N)"
+  ],
+  [
+   "Why does a car tire heat up when it is driven for a long distance?",
+   "As a car moves, the tire deforms and rotates, causing internal friction between the rubber molecules and with the road surface. This friction converts kinetic energy into thermal energy, increasing the tire's temperature. Additionally, the repeated flexing of the tire generates heat due to hysteresis. \nFinal answer: due to friction and hysteresis during deformation"
+  ],
+  [
+   "What happens to the speed of sound in air when the temperature increases?",
+   "The speed of sound in air increases with temperature. This is because higher temperatures increase the kinetic energy of air molecules, allowing them to transmit sound waves faster. The speed of sound in dry air is approximately 331 m/s at 0\u00b0C and increases by about 0.6 m/s for each degree Celsius rise. \nFinal answer: it increases"
+  ],
+  [
+   "How does the wavelength of light change when it moves from air into glass?",
+   "When light travels from air into glass, it slows down because glass has a higher refractive index. However, the frequency of the light remains constant. Since wavelength is related to speed and frequency by the equation \u03bb = v/f, a decrease in speed results in a shorter wavelength. \nFinal answer: it decreases"
+  ],
+  [
+   "What is the role of mitochondria in a cell?",
+   "Mitochondria are known as the powerhouses of the cell because they generate most of the cell's supply of adenosine triphosphate (ATP), which is used as a source of chemical energy. This process occurs through cellular respiration, where glucose and oxygen are converted into ATP, carbon dioxide, and water. The inner membrane of mitochondria contains proteins involved in the electron transport chain, which drives ATP synthesis. Final answer: Mitochondria produce ATP through cellular respiration."
+  ],
+  [
+   "How does photosynthesis contribute to the carbon cycle?",
+   "Photosynthesis is a process in which plants, algae, and some bacteria convert carbon dioxide (CO\u2082) from the atmosphere into organic compounds, such as glucose, using sunlight energy. This removes CO\u2082 from the atmosphere and stores carbon in biomass. When organisms respire or decompose, carbon is released back into the atmosphere as CO\u2082, completing the cycle. Final answer: Photosynthesis removes CO\u2082 from the atmosphere and stores carbon in organic matter."
+  ],
+  [
+   "What is the function of the enzyme amylase in the human digestive system?",
+   "Amylase is an enzyme that breaks down complex carbohydrates, such as starch, into simpler sugars like maltose. It is secreted by the salivary glands in the mouth and continues to act in the small intestine. In the mouth, salivary amylase begins the digestion of carbohydrates before food moves to the stomach. Final answer: Amylase breaks down starch into simpler sugars during digestion."
+  ],
+  [
+   "Explain how natural selection leads to evolution.",
+   "Natural selection is the process by which organisms with advantageous traits are more likely to survive and reproduce. These traits are passed on to offspring, increasing their frequency in the population over time. As the genetic composition of a population changes over generations, evolution occurs. For example, if a population of birds has varying beak sizes, those with beak sizes best suited for available food sources are more likely to survive and reproduce. Final answer: Natural selection favors traits that enhance survival, leading to changes in a population's gene pool over time, which is evolution."
+  ],
+  [
+   "What is the chemical formula for water?",
+   "Water is a compound made up of two hydrogen atoms and one oxygen atom. The chemical formula is determined by the valency of the elements involved. Hydrogen has a valency of 1, and oxygen has a valency of 2. Therefore, two hydrogen atoms combine with one oxygen atom to form H\u2082O.\nFinal answer: H\u2082O"
+  ],
+  [
+   "What is the name of the process in which a solid turns directly into a gas without passing through the liquid state?",
+   "When a solid changes directly into a gas without becoming a liquid first, this process is called sublimation. An example is dry ice (solid carbon dioxide) turning into carbon dioxide gas. This occurs when the substance absorbs enough energy to overcome intermolecular forces directly from solid to gas phase.\nFinal answer: Sublimation"
+  ],
+  [
+   "Which element has the highest electronegativity in the periodic table?",
+   "Electronegativity is the ability of an atom to attract shared electrons in a bond. It increases across a period and decreases down a group. Fluorine, located in group 17 and period 2, has the highest electronegativity value of 4.0 on the Pauling scale. No other element has a higher value.\nFinal answer: Fluorine"
+  ],
+  [
+   "What is the pH of a neutral solution at 25\u00b0C?",
+   "pH is a measure of the hydrogen ion concentration in a solution. A neutral solution has equal concentrations of H\u207a and OH\u207b ions. At 25\u00b0C, the ion product of water (Kw) is 1.0 \u00d7 10\u207b\u00b9\u2074, and the pH is calculated as -log[H\u207a], which is 7.0 for a neutral solution.\nFinal answer: 7"
+  ],
+  [
+   "Which ancient civilization built the pyramids at Giza?",
+   "Step 1: The pyramids at Giza are among the most famous monuments in the world. Step 2: These pyramids were constructed as tombs for Pharaohs. Step 3: The Great Pyramid was built for Pharaoh Khufu during the Old Kingdom period. Step 4: This civilization is known for its advancements in architecture, religion, and governance. Step 5: The people who built these structures were the ancient Egyptians. Final answer: Ancient Egyptians"
+  ],
+  [
+   "What was the main cause of the Black Death in Europe during the 14th century?",
+   "Step 1: The Black Death was a devastating pandemic that swept through Europe in the 14th century. Step 2: It was caused by a bacterium called Yersinia pestis. Step 3: This bacterium was transmitted to humans through the bites of infected fleas. Step 4: These fleas typically lived on black rats, which were common on merchant ships. Step 5: The disease spread rapidly along trade routes. Final answer: Bubonic plague caused by Yersinia pestis"
+  ],
+  [
+   "Which empire was founded by Alexander the Great?",
+   "Step 1: Alexander the Great was a Macedonian king who became one of history's most successful military commanders. Step 2: He led his armies across Asia and into Africa, conquering much of the known world of his time. Step 3: After his death in 323 BCE, his vast territories were divided among his generals. Step 4: The empire he built, known for its Hellenistic culture, is referred to as the Hellenistic Empire. Step 5: Although it was later broken into smaller kingdoms, it originated from his conquests. Final answer: The Macedonian Empire"
+  ],
+  [
+   "In what year did the United States declare independence from Great Britain?",
+   "Step 1: The American Revolution was a war between the Thirteen Colonies and Great Britain. Step 2: In 1776, the Second Continental Congress met in Philadelphia. Step 3: During this meeting, they adopted the Declaration of Independence. Step 4: This document formally announced the colonies' separation from British rule. Step 5: The declaration was signed on July 4, 1776. Final answer: 1776"
+  ]
+ ]
+}
