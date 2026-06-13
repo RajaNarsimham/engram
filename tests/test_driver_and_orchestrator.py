@@ -100,3 +100,35 @@ def test_final_extracts_after_marker_and_text_is_cached():
     assert a.final() == "56"
     assert a.text().startswith("Step 1")          # text() still works after final() (cached)
     assert Answer(stream=iter(["just an answer"])).final() == "just an answer"
+
+
+def test_reasoning_effort_enables_cot_over_api(tmp_path):
+    pytest.importorskip("fastapi")
+    from fastapi.testclient import TestClient
+
+    from engram.api.server import create_app
+    from engram.core import Engram
+
+    class CapDriver(BaseLLMDriver):
+        adapter_dir = "."
+
+        def capabilities(self):
+            return DriverCapabilities(train_lora=False, tool_use=False)
+
+        def arch_info(self):
+            return ArchInfo(induction_capable=True)
+
+        def generate(self, req):
+            self.last_req = req
+            yield "ok"
+
+        def embed(self, texts):
+            return [[0.1] for _ in texts]
+
+    eg = Engram(driver=CapDriver(), store_dir=str(tmp_path), load_on_start=False)
+    c = TestClient(create_app(engram=eg))
+    body = {"messages": [{"role": "user", "content": "q"}]}
+    assert c.post("/v1/chat/completions", json={**body, "reasoning_effort": "high"}).status_code == 200
+    assert "step by step" in eg.driver.last_req.messages[0]["content"].lower()   # high -> CoT
+    c.post("/v1/chat/completions", json={**body, "reasoning_effort": "low"})
+    assert "step by step" not in eg.driver.last_req.messages[0]["content"].lower()  # low -> direct

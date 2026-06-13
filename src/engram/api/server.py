@@ -40,6 +40,7 @@ class ChatRequest(BaseModel):
     project: str = "default"          # Engram extension (multi-tenant later)
     agentic: bool = False             # Engram extension: model-driven tool loop
     cot: bool = False                 # Engram extension: chain-of-thought reasoning
+    reasoning_effort: str | None = None  # OpenAI-compatible: minimal|low|medium|high -> CoT
 
 
 class TeachRequest(BaseModel):
@@ -161,6 +162,10 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         messages = [m.model_dump() for m in req.messages]
         model, cid = req.model, "chatcmpl-" + uuid.uuid4().hex[:24]
         project = scoped(tenant, req.project)
+        # OpenAI reasoning_effort -> CoT: medium/high reason step-by-step; high gets more room.
+        effort = (req.reasoning_effort or "").lower()
+        use_cot = req.cot or effort in ("medium", "high")
+        gen_tokens = max(req.max_tokens, 2048) if effort == "high" else req.max_tokens
 
         if req.agentic and req.stream:        # streaming tool loop (content + tool events)
             def agent_stream():
@@ -191,8 +196,8 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         if req.stream:
             def stream():
                 with eg().model_lock:
-                    ans = eg().chat(messages, project=project, cot=req.cot,
-                                    max_new_tokens=req.max_tokens, temperature=req.temperature)
+                    ans = eg().chat(messages, project=project, cot=use_cot,
+                                    max_new_tokens=gen_tokens, temperature=req.temperature)
                     yield _sse(cid, model, delta={"role": "assistant"},
                                extra={"engram": {"provenance": ans.provenance}})
                     for piece in ans.stream:
@@ -202,8 +207,8 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
             return StreamingResponse(stream(), media_type="text/event-stream")
 
         with eg().model_lock:
-            ans = eg().chat(messages, project=project, cot=req.cot,
-                            max_new_tokens=req.max_tokens, temperature=req.temperature)
+            ans = eg().chat(messages, project=project, cot=use_cot,
+                            max_new_tokens=gen_tokens, temperature=req.temperature)
             text = ans.text()
         return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,
                 "choices": [{"index": 0, "message": {"role": "assistant", "content": text},

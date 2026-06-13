@@ -120,8 +120,16 @@ eg.consolidate()                      # internalize it as an eval-gated skill ad
 ans = eg.chat("If A→C, C→D, D→B, where is A after 3 steps?", cot=True)  # reasoning → step-by-step
 print(ans.final())                    # .final() returns just the answer after the reasoning
 ```
-Over the API, send `"cot": true` in the chat request. CoT spends more tokens (the reasoning
-lives in the output), so it's **opt-in per request** — use it for hard, multi-step queries.
+Over the API, use the OpenAI-standard **`"reasoning_effort"`**: `medium`/`high` turn on CoT
+(`high` also gets a bigger token budget), `low`/`minimal` answer directly. (`"cot": true` is
+the explicit equivalent.) CoT spends more tokens (the reasoning lives in the output), so it's
+**opt-in per request** — use it for hard, multi-step queries.
+
+```bash
+curl localhost:8000/v1/chat/completions -d '{
+  "messages":[{"role":"user","content":"If A→C, C→D, D→B, where is A after 3 steps?"}],
+  "reasoning_effort":"high" }'
+```
 
 Run it as a **normal OpenAI-compatible server**:
 
