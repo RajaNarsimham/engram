@@ -63,6 +63,11 @@ model. The non-obvious findings baked into the architecture:
   facts (RAG) and the behavior (LoRA). Honest, narrow win; see the paper §7.2.
 - **Route with frozen features, not a trained classifier** — trained routers
   overfit and don't generalize to adapters added later.
+- **Reasoning is bought with chain-of-thought, not depth.** Adding layers/heads to a
+  fixed base bought *no* reasoning (the bottleneck is capacity, not depth); letting the
+  model *write each step* crossed an 8-hop task at **100%** where direct-answering stalled
+  at ~40%. So Engram's reasoning lever is **CoT** (`cot=True`) — an inference flag, no
+  training. The division of labor: **facts → RAG, behaviors → LoRA, reasoning → CoT.**
 
 See the **[paper](docs/PAPER.md)** for the full design, principles, and validation,
 and [`docs/`](docs/) for the experiments and requirements.
@@ -111,7 +116,12 @@ eg = Engram("Qwen/Qwen3.5-4B")        # bring your own open-weight base model
 eg.teach("Project Zephyr ships March 3rd, 2026, led by Dana Okoro.")  # teach in-band → RAG instant
 print(eg.chat("When does Project Zephyr ship?").text())               # grounded answer + provenance
 eg.consolidate()                      # internalize it as an eval-gated skill adapter
+
+ans = eg.chat("If A→C, C→D, D→B, where is A after 3 steps?", cot=True)  # reasoning → step-by-step
+print(ans.final())                    # .final() returns just the answer after the reasoning
 ```
+Over the API, send `"cot": true` in the chat request. CoT spends more tokens (the reasoning
+lives in the output), so it's **opt-in per request** — use it for hard, multi-step queries.
 
 Run it as a **normal OpenAI-compatible server**:
 

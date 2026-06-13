@@ -39,6 +39,7 @@ class ChatRequest(BaseModel):
     max_tokens: int = 512
     project: str = "default"          # Engram extension (multi-tenant later)
     agentic: bool = False             # Engram extension: model-driven tool loop
+    cot: bool = False                 # Engram extension: chain-of-thought reasoning
 
 
 class TeachRequest(BaseModel):
@@ -190,7 +191,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
         if req.stream:
             def stream():
                 with eg().model_lock:
-                    ans = eg().chat(messages, project=project,
+                    ans = eg().chat(messages, project=project, cot=req.cot,
                                     max_new_tokens=req.max_tokens, temperature=req.temperature)
                     yield _sse(cid, model, delta={"role": "assistant"},
                                extra={"engram": {"provenance": ans.provenance}})
@@ -201,7 +202,7 @@ def create_app(engram=None, model_id: str | None = None, device: str = "cuda:0",
             return StreamingResponse(stream(), media_type="text/event-stream")
 
         with eg().model_lock:
-            ans = eg().chat(messages, project=project,
+            ans = eg().chat(messages, project=project, cot=req.cot,
                             max_new_tokens=req.max_tokens, temperature=req.temperature)
             text = ans.text()
         return {"id": cid, "object": "chat.completion", "created": int(time.time()), "model": model,

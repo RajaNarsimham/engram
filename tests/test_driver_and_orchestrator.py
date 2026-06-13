@@ -1,7 +1,7 @@
 import pytest
 
 from engram.drivers.base import ArchInfo, BaseLLMDriver, DriverCapabilities, GenRequest
-from engram.orchestrator.orchestrator import Orchestrator
+from engram.orchestrator.orchestrator import Answer, Orchestrator
 from engram.registry.registry import Capability, CapabilityKind, Registry
 from engram.retrieval.retriever import Hit
 
@@ -77,3 +77,26 @@ def test_answer_retrieves_and_reports_provenance():
     ans = o.answer([{"role": "user", "content": "q"}], project="default")
     assert ans.provenance["docs"] == ["the fact"]
     assert ans.text() == "ok"
+
+
+# ---- chain-of-thought (reasoning lever; inference-only, no LoRA training) -----
+def test_cot_adds_reasoning_instruction_only_when_enabled():
+    o = Orchestrator(MockDriver(), Registry(), {}, _emb)
+    on = o._assemble([{"role": "user", "content": "q"}], [], cot=True)[0]["content"].lower()
+    off = o._assemble([{"role": "user", "content": "q"}], [], cot=False)[0]["content"].lower()
+    assert "step by step" in on and "step by step" not in off
+
+
+def test_answer_cot_flags_provenance_and_prompts_driver():
+    o = Orchestrator(MockDriver(), Registry(), {}, _emb)
+    ans = o.answer([{"role": "user", "content": "q"}], cot=True)
+    assert ans.provenance["cot"] is True
+    ans.text()                                     # consume the lazy generator -> sets last_req
+    assert "step by step" in o.driver.last_req.messages[0]["content"].lower()
+
+
+def test_final_extracts_after_marker_and_text_is_cached():
+    a = Answer(stream=iter(["Step 1...\nStep 2...\nFinal answer: 56"]))
+    assert a.final() == "56"
+    assert a.text().startswith("Step 1")          # text() still works after final() (cached)
+    assert Answer(stream=iter(["just an answer"])).final() == "just an answer"

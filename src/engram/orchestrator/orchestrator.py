@@ -22,14 +22,29 @@ _SYS = ("You are a helpful assistant. When a Context section is provided, ground
         "answer in it and prefer it over prior assumptions. If the context is not "
         "relevant, rely on your own knowledge. Be concise.")
 
+# CoT is the validated lever for REASONING on a fixed base (multipass-via-tokens beats
+# added depth). It's an inference-time instruction — no LoRA training needed; the base
+# already reasons. Facts -> RAG, behaviors -> LoRA, reasoning -> CoT.
+_COT = ("Think step by step: work through the problem explicitly, showing each step of your "
+        "reasoning. When finished, write your conclusion on a final line beginning with "
+        "'Final answer:'.")
+
 
 @dataclass
 class Answer:
     provenance: dict = field(default_factory=dict)   # {docs:[...], skill:str|None, scores:{...}}
     stream: Iterator[str] | None = None
+    _text: str | None = field(default=None, repr=False)
 
     def text(self) -> str:
-        return "".join(self.stream) if self.stream else ""
+        if self._text is None:
+            self._text = "".join(self.stream) if self.stream else ""
+        return self._text
+
+    def final(self) -> str:
+        """Just the final answer — text after 'Final answer:' (for CoT), else the full text."""
+        t = self.text()
+        return t.split("Final answer:")[-1].strip() if "Final answer:" in t else t.strip()
 
 
 def _cos(a, b) -> float:
@@ -70,7 +85,7 @@ class Orchestrator:
         best.served += 1
         return best.name, score
 
-    def _assemble(self, messages, hits: list[Hit], gfacts=()):
+    def _assemble(self, messages, hits: list[Hit], gfacts=(), cot: bool = False):
         sys = _SYS
         if hits:
             ctx = "\n".join(f"[{i+1}] {h.doc}" for i, h in enumerate(hits))
@@ -78,19 +93,23 @@ class Orchestrator:
         if gfacts:
             facts = "\n".join(f"- {f}" for f in gfacts)
             sys = f"{sys}\n\nKnowledge graph facts:\n{facts}"
+        if cot:
+            sys = f"{sys}\n\n{_COT}"
         return [{"role": "system", "content": sys}, *messages]
 
     def answer(self, messages, project: str = "default", max_new_tokens: int = 512,
-               temperature: float = 0.0) -> Answer:
+               temperature: float = 0.0, cot: bool = False) -> Answer:
         query = next((m["content"] for m in reversed(messages) if m["role"] == "user"), "")
         retr = self.retrievers.get(project)
         hits = retr.retrieve(query, self.k) if retr else []
         graph = self.graphs.get(project)
         gfacts = graph.query(query) if graph else []
         skill, score = self._route(query, project)
-        msgs = self._assemble(messages, hits, gfacts)
+        msgs = self._assemble(messages, hits, gfacts, cot=cot)
+        if cot:                                  # reasoning needs room to think
+            max_new_tokens = max(max_new_tokens, 1024)
         req = GenRequest(messages=msgs, lora_ids=(skill,) if skill else (),
                          max_new_tokens=max_new_tokens, temperature=temperature)
         prov = {"docs": [h.doc for h in hits], "scores": [round(h.score, 3) for h in hits],
-                "skill": skill, "route_score": round(score, 3), "graph_facts": gfacts}
+                "skill": skill, "route_score": round(score, 3), "graph_facts": gfacts, "cot": cot}
         return Answer(provenance=prov, stream=self.driver.generate(req))
